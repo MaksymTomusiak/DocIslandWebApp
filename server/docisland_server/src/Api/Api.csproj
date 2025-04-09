@@ -21,8 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Modules\Errors\" />
-      <Folder Include="Modules\Validators\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 

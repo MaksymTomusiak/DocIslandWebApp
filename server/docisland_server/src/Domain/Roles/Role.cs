@@ -2,8 +2,7 @@
 
 namespace Domain.Roles;
 
-public class Role : IdentityRole<Guid>
+public class Role(string name, string description) : IdentityRole<Guid>(name)
 {
-    public string Description { get; set; }
-    private Role(string name, string description) : base(name) => Description = description;
+    public string Description { get; set; } = description;
 }

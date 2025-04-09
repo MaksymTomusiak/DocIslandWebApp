@@ -12,8 +12,10 @@ namespace Api.Controllers;
 [ApiController]
 public class AuthController(
     UserManager<User> userManager,
-    ISender sender) : ControllerBase
+    ISender sender) : Controller
 {
+    private const string SuccessVerificationViewName = "VerifyEmailSuccess";
+    
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromBody] UserLoginDto request)
     {
@@ -45,8 +47,7 @@ public class AuthController(
         var command = new VerifyEmailCommand { UserId = userId, Token = token };
         var result = await sender.Send(command);
         return result.Match<IActionResult>(
-            //ToDo: Add success view
-            success => Ok(success),
+            success => View(SuccessVerificationViewName, success.UserName),
             exception => exception.ToObjectResult()
         );
     }

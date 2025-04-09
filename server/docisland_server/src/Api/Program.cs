@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .AddUserSecrets<Program>(optional: true) // Local dev only
+    .AddEnvironmentVariables();
+
 // Configure application services
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructure(builder.Configuration);

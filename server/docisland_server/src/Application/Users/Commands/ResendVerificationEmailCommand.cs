@@ -38,7 +38,6 @@ public class ResendVerificationEmailCommandHandler(
 
         await userManager.UpdateAsync(user);
         
-        //ToDo: Add email sending
         // Send verification email using EmailViewRenderer
         var verificationLink = $"http://localhost:5256/users/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
         var model = (user.UserName, VerificationLink: verificationLink);

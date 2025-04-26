@@ -64,7 +64,7 @@ public class RegisterUserCommandHandler(
         // Generate email verification token
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         user.EmailVerificationToken = token;
-        user.EmailVerificationTokenExpiration = DateTime.UtcNow.AddHours(24); // Token expires in 24 hours
+        user.EmailVerificationTokenExpiration = DateTime.UtcNow.AddHours(24);
 
         // Update the user with the verification token
         await userManager.UpdateAsync(user);

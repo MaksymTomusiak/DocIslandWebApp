@@ -1,4 +1,6 @@
+using Application.Common.Interfaces.Services.Emails;
 using Application.Common.Interfaces.Services.Jwt;
+using Application.Common.Interfaces.Services.Views;
 using Application.Users.Exceptions;
 using Domain.Roles;
 using Domain.Users;
@@ -18,7 +20,9 @@ public record RegisterUserCommand : IRequest<Either<UserException, string>>
 public class RegisterUserCommandHandler(
     IJwtProvider jwtProvider,
     UserManager<User> userManager,
-    RoleManager<Role> roleManager)
+    RoleManager<Role> roleManager,
+    IViewRenderer viewRenderer,
+    IEmailService emailService)
     : IRequestHandler<RegisterUserCommand, Either<UserException, string>>
 {
     private const string UserRoleName = "User";
@@ -65,7 +69,14 @@ public class RegisterUserCommandHandler(
         // Update the user with the verification token
         await userManager.UpdateAsync(user);
 
-        //ToDo: Add email verification
+        // Send verification email using EmailViewRenderer
+        var verificationLink = $"http://localhost:5256/users/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
+        var model = (user.UserName, VerificationLink: verificationLink);
+        const string subject = "Verify Your Email Address";
+        var htmlBody = viewRenderer.RenderView("EmailVerification", model, user.Email, subject);
+
+        await emailService.SendEmail(user.Email, subject, htmlBody, isHtml: true);
+
         
         var role = await roleManager.FindByNameAsync(UserRoleName);
         if (role == null)

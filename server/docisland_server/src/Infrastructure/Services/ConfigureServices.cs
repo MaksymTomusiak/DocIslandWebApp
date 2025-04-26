@@ -1,6 +1,9 @@
 using Application.Common.Interfaces.Services.Emails;
+using Application.Common.Interfaces.Services.Files;
 using Application.Common.Interfaces.Services.Views;
+using Azure.Storage.Blobs;
 using Infrastructure.Services.Emails;
+using Infrastructure.Services.Files;
 using Infrastructure.Services.Views;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -16,7 +19,18 @@ public static class ConfigureServices
     {
         AddNotifications(services);
 
-        //ToDo: Add file storage
+        // Retrieve Blob Storage configuration
+        var blobStorageConfig = configuration.GetSection("Azure:BlobStorage");
+        var connectionString = blobStorageConfig["ConnectionString"];
+
+        // Register BlobServiceClient with connection string
+        services.AddScoped(_ => new BlobServiceClient(connectionString));
+    
+        // Register AzureFileStorageService and optionally pass containerName
+        services.AddScoped<AzureFileStorageService>();
+    
+        // Register IFileStorageService
+        services.AddScoped<IFileStorageService>(provider => provider.GetRequiredService<AzureFileStorageService>());
     }
 
     private static void AddNotifications(IServiceCollection services)

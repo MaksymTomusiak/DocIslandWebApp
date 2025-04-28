@@ -20,7 +20,7 @@ public class Message
         IsResponse = isResponse;
     }
 
-    public static Message New(string content, ConversationId conversationId, bool isResponse) =>
+    public static Message New(string content, ConversationId conversationId, bool isResponse = false) =>
         new Message(MessageId.New(), content, conversationId, DateTime.UtcNow, isResponse);
 
     public void UpdateContent(string content) => Content = content;

@@ -20,8 +20,8 @@ public class File
         UserId = userId;
     }
 
-    public File New(string originalFileName, uint fileSizeBytes, Guid userId) =>
-        new File(FileId.New(), originalFileName, fileSizeBytes, userId);
+    public static File New(string originalFileName, uint fileSizeBytes, Guid userId) =>
+        new(FileId.New(), originalFileName, fileSizeBytes, userId);
     
     public void UpdateDetails(string originalFileName, uint fileSizeBytes) =>
         (OriginalFileName, FileSizeBytes) = (originalFileName, fileSizeBytes);

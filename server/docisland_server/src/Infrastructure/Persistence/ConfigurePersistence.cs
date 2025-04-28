@@ -51,5 +51,8 @@ public static class ConfigurePersistence
         services.AddScoped<IConversationRepository>(provider => provider.GetRequiredService<ConversationRepository>());
         services.AddScoped<IConversationQueries>(provider => provider.GetRequiredService<ConversationRepository>());
 
+        services.AddScoped<IMessageQueries, MessageRepository>();
+        services.AddScoped<IMessageRepository,MessageRepository>();
+
     }
 }

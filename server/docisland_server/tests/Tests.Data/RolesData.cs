@@ -9,4 +9,7 @@ public static class RolesData
     
     public static Role UserRole =>
         new Role("User", "User role");
+
+    public static Role TestRole =>
+        new("Test", "Test Role");
 }

@@ -33,7 +33,6 @@ public class InvalidVerificationTokenException(Guid id)
 public class EmailVerificationTokenExpiredException(Guid id)
     : UserException(id, $"Email verification token expired!");
 
-
 public class InvalidCredentialsException() 
     : UserException(Guid.Empty, $"Invalid credentials!");
 

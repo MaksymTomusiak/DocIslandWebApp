@@ -1,6 +1,7 @@
 using Api.Modules;
 using Api.OptionsSetup;
 using Application;
+using Application.Common.Interfaces.Services.LLM;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,6 +59,11 @@ builder.Services.AddAuthentication(options =>
     });
 
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+var provider = scope.ServiceProvider;
+var llm = provider.GetRequiredService<ILlmService>();
+var response = await llm.AskQuestionAsync("What is the capital of France?");
 
 app.UseStaticFiles();
 

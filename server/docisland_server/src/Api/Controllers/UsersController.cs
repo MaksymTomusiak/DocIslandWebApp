@@ -18,7 +18,7 @@ public class UsersController(
 {
     private const string SuccessVerificationViewName = "VerifyEmailSuccess";
     private const string FacebookVerificationScheme = "Facebook";
-    
+    //ToDo: add cancellation token
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IEnumerable<UserDto>> GetAll(CancellationToken cancellationToken = default)

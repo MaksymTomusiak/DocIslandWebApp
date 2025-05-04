@@ -16,7 +16,11 @@ public static class ConversationErrorHandler
                     or ConversationUserIdNotFoundException
                     or ConversationFileNotFoundException => StatusCodes.Status404NotFound,
                 ConversationCantBeDeletedException => StatusCodes.Status403Forbidden,
-                ConversationUnknownException => StatusCodes.Status500InternalServerError,
+                ConversationUnsupportedFileTypeException => StatusCodes.Status415UnsupportedMediaType,
+                ConversationUnknownException
+                    or ConversationFileSavingException
+                    or ConversationLlmException 
+                    or ConversationFileDeletingException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Conversation error handler is not implemented")
             }
         };

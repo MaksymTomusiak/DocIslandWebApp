@@ -37,7 +37,7 @@ public class ConversationsController(
     [Authorize]
     [HttpPost("add")]
     public async Task<ActionResult<ConversationDto>> Create(
-        [FromBody] ConversationCreateDto request,
+        [FromForm] ConversationCreateDto request,
         CancellationToken cancellationToken)
     {
         var input = new CreateConversationCommand

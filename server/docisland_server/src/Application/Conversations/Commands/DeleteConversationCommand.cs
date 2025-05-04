@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Services.Files;
 using Application.Conversations.Exceptions;
 using Domain.Conversations;
 using Domain.Users;
@@ -20,6 +21,8 @@ public class DeleteConversationCommandHandler(
     IHttpContextAccessor httpContextAccessor,
     IConversationRepository conversationRepository,
     IConversationQueries conversationQueries,
+    IFileQueries fileQueries,
+    IFileStorageService fileStorageService,
     UserManager<User> userManager) : IRequestHandler<DeleteConversationCommand, Either<ConversationException, Conversation>>
 {
     public async Task<Either<ConversationException, Conversation>> Handle(DeleteConversationCommand request,
@@ -56,9 +59,26 @@ public class DeleteConversationCommandHandler(
     {
         try
         {
-            //ToDo: Add file deleting
+            const string conversationsFiles = "conversations-files";
+            var conversationFile = await fileQueries.GetByConversation(conversation.Id, cancellationToken);
+            var fileDeleteResult = await conversationFile.Match<Task<Either<ConversationException, bool>>>(
+                async f =>
+                {
+                    try
+                    {
+                        await fileStorageService.DeleteFileAsync(conversationsFiles, f.Id.Value, cancellationToken);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        return new ConversationFileDeletingException(ex);
+                    }        
+                },
+                () => Task.FromResult<Either<ConversationException, bool>>(true));
             
-            return await conversationRepository.Delete(conversation, cancellationToken);
+            return await fileDeleteResult.Match<Task<Either<ConversationException, Conversation>>>(
+                async _ => await conversationRepository.Delete(conversation, cancellationToken),
+                ex => Task.FromResult<Either<ConversationException, Conversation>>(ex));
         }
         catch (Exception ex)
         {

@@ -14,11 +14,17 @@ public class MessageNotFoundException(Guid id)
 public class MessageUserIdNotFoundException(Guid id)
     : MessageException(Guid.Empty, $"User with id: {id} not found!");
 
+public class MessageUserWrongException()
+    : MessageException(Guid.Empty, $"You can't create message for another user!");
+
 public class MessageUserNotFoundException(User user)
     : MessageException(Guid.Empty, $"User {user.UserName} not found!");
 
 public class MessageCantBeDeletedException()
     : MessageException(Guid.Empty, $"You can't delete this message!");
+
+public class MessagLlmException(Exception innerException)
+    : MessageException(Guid.Empty, $"Error while creating message!", innerException);
 
 public class MessageUnknownException(Guid id, Exception innerException)
     : MessageException(id, $"Unknown exception for the Message under id: {id}!", innerException);

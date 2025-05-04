@@ -13,13 +13,13 @@ public class DocxFileTextExtractor : IFileTextExtractor
         return contentType?.Equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document", StringComparison.OrdinalIgnoreCase) == true;
     }
 
-    public async Task<string> ExtractTextAsync(IFormFile file)
+    public async Task<string> ExtractTextAsync(IFormFile file, CancellationToken cancellationToken)
     {
         if (file == null)
             throw new ArgumentNullException(nameof(file));
 
         using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
+        await file.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
 
         using var wordDocument = WordprocessingDocument.Open(memoryStream, false);

@@ -54,6 +54,8 @@ public class ConversationRepository(ApplicationDbContext context) : IConversatio
 
     public async Task<Conversation> Delete(Conversation conversation, CancellationToken cancellationToken)
     {
+        context.ChangeTracker.Clear();
+        
         context.Conversations.Remove(conversation);
         
         await context.SaveChangesAsync(cancellationToken);

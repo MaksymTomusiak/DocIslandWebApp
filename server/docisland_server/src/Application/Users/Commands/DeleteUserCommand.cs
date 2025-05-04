@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Services.Files;
 using Application.Users.Exceptions;
 using Domain.Users;
 using LanguageExt;
@@ -15,7 +18,10 @@ public record DeleteUserCommand : IRequest<Either<UserException, string>>
 
 public class DeleteUserCommandHandler(
     UserManager<User> userManager,
-    IHttpContextAccessor httpContextAccessor) : IRequestHandler<DeleteUserCommand, Either<UserException, string>>
+    IHttpContextAccessor httpContextAccessor,
+    IFileQueries fileQueries,
+    IFileRepository fileRepository,
+    IFileStorageService fileStorageService) : IRequestHandler<DeleteUserCommand, Either<UserException, string>>
 {
     public async Task<Either<UserException, string>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
@@ -49,8 +55,15 @@ public class DeleteUserCommandHandler(
         try
         {
             var result = await userManager.DeleteAsync(userToDelete);
+            const string conversationsFiles = "conversations-files";
+            var files = await fileQueries.GetByUser(userToDelete.Id, cancellationToken);
+            foreach (var file in files)
+            {
+                await fileRepository.Delete(file, cancellationToken);
+                await fileStorageService.DeleteFileAsync(conversationsFiles, file.Id.Value, cancellationToken);
+            }
+            
             return !result.Succeeded ? "Could not delete user" : "User account deleted successfully.";
-            //ToDo: Add files deleting
         }
         catch (Exception ex)
         {

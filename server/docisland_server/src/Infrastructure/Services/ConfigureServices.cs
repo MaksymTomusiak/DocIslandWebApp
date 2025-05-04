@@ -5,6 +5,7 @@ using Application.Common.Interfaces.Services.Views;
 using Azure.Storage.Blobs;
 using Infrastructure.Services.Emails;
 using Infrastructure.Services.Files;
+using Infrastructure.Services.Files.FileTextExtractors;
 using Infrastructure.Services.LLM;
 using Infrastructure.Services.Views;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -21,7 +22,7 @@ public static class ConfigureServices
     {
         AddNotifications(services);
 
-        AddFileStorage(services, configuration);
+        AddFilesServices(services, configuration);
         
         AddLlmServices(services);
     }
@@ -32,7 +33,7 @@ public static class ConfigureServices
         services.AddScoped<ILlmService, LlmService>();
     }
 
-    private static void AddFileStorage(IServiceCollection services, IConfiguration configuration)
+    private static void AddFilesServices(IServiceCollection services, IConfiguration configuration)
     {
         // Retrieve Blob Storage configuration
         var blobStorageConfig = configuration.GetSection("Azure:BlobStorage");
@@ -46,6 +47,10 @@ public static class ConfigureServices
     
         // Register IFileStorageService
         services.AddScoped<IFileStorageService>(provider => provider.GetRequiredService<AzureFileStorageService>());
+
+        services.AddScoped<IFileTextExtractor, TxtFileTextExtractor>();
+        services.AddScoped<IFileTextExtractor, DocxFileTextExtractor>();
+        services.AddScoped<IFileTextExtractor, PdfFileTextExtractor>();
     }
 
     private static void AddNotifications(IServiceCollection services)

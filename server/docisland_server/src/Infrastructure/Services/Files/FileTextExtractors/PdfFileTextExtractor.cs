@@ -13,13 +13,13 @@ public class PdfFileTextExtractor : IFileTextExtractor
         return contentType?.Equals("application/pdf", StringComparison.OrdinalIgnoreCase) == true;
     }
 
-    public async Task<string> ExtractTextAsync(IFormFile file)
+    public async Task<string> ExtractTextAsync(IFormFile file, CancellationToken cancellationToken)
     {
         if (file == null)
             throw new ArgumentNullException(nameof(file));
 
         using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
+        await file.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
 
         using var pdfReader = new PdfReader(memoryStream);

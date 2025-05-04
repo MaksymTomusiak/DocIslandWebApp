@@ -1,7 +1,11 @@
 using Application.Common.Interfaces.Services;
 using Application.Common.Interfaces.Services.Emails;
+using Application.Common.Interfaces.Services.Files;
+using Application.Common.Interfaces.Services.LLM;
+using Domain.Conversations;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -38,14 +42,36 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
         {
             RegisterDatabase(services);
 
+            // Remove and mock IEmailService
             services.RemoveServiceByType(typeof(IEmailService));
-
             var emailServiceMock = new Mock<IEmailService>();
-            emailServiceMock.Setup(x => x.SendEmail
-                (It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()));
-
+            emailServiceMock
+                .Setup(x => x.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()));
             services.AddScoped(_ => emailServiceMock.Object);
+
+            // Remove and mock IFileStorageService
+            services.RemoveServiceByType(typeof(IFileStorageService));
+            var fileStorageMock = new Mock<IFileStorageService>();
+            fileStorageMock
+                .Setup(x => x.SaveFileAsync(It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("https://mocked-storage-uri.com/file.jpg");
+            fileStorageMock
+                .Setup(x => x.DeleteFileAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("https://mocked-storage-uri.com/file.jpg");
+            services.AddScoped(_ => fileStorageMock.Object);
+
+            // Remove and mock ILlmService
+            services.RemoveServiceByType(typeof(ILlmService));
+            var llmServiceMock = new Mock<ILlmService>();
+            llmServiceMock
+                .Setup(x => x.AskQuestionAsync(It.IsAny<ConversationId>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("Mocked LLM response");
+            llmServiceMock
+                .Setup(x => x.CreateConversation(It.IsAny<ConversationId>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            services.AddScoped(_ => llmServiceMock.Object);
         });
+
     }
 
     private void RegisterDatabase(IServiceCollection services)

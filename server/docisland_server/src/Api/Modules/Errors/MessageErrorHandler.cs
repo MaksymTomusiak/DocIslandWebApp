@@ -15,8 +15,10 @@ public static class MessageErrorHandler
                     or MessageUserNotFoundException 
                     or MessageUserIdNotFoundException
                     or MessageConversationNotFoundException => StatusCodes.Status404NotFound,
-                MessageCantBeDeletedException => StatusCodes.Status403Forbidden,
-                MessageUnknownException => StatusCodes.Status500InternalServerError,
+                MessageCantBeDeletedException
+                    or MessageUserWrongException => StatusCodes.Status403Forbidden,
+                MessageUnknownException
+                     or MessagLlmException=> StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Message error handler is not implemented")
             }
         };

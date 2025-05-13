@@ -1,35 +1,43 @@
 * {
-  box-sizing: border-box;
-  padding: 0%;
-  margin: 0%;
+    box-sizing: border-box;
+    padding: 0%;
+    margin: 0%;
 }
 
 #root {
-  width: 100%;
-  background-color: #ffffff;
+    width: 100%;
+    background-color: #ffffff;
 }
 
 @font-face {
-  font-family: secondary-regular;
-  src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Regular.ttf);
+    font-family: secondary-regular;
+    src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Regular.ttf);
 }
 @font-face {
-  font-family: secondary-light;
-  src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Light.ttf);
+    font-family: secondary-light;
+    src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Light.ttf);
 }
 @font-face {
-  font-family: secondary-bold;
-  src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf);
+    font-family: secondary-bold;
+    src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf);
 }
 @font-face {
-  font-family: secondary-semibold;
-  src: url(./fonts/Montserrat_Alternates/MontserratAlternates-SemiBold.ttf);
+    font-family: secondary-semibold;
+    src: url(./fonts/Montserrat_Alternates/MontserratAlternates-SemiBold.ttf);
 }
 @font-face {
-  font-family: secondary-medium;
-  src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Medium.ttf);
+    font-family: secondary-medium;
+    src: url(./fonts/Montserrat_Alternates/MontserratAlternates-Medium.ttf);
 }
 @font-face {
-  font-family: main-regular;
-  src: url(./fonts/Fonarto/Fonarto.ttf);
+    font-family: main-regular;
+    src: url(./fonts/Fonarto/Fonarto.ttf);
+}
+@font-face {
+    font-family: alternative-medium;
+    src: url(./fonts/Montserrat/Montserrat-Medium.ttf);
+}
+@font-face {
+    font-family: alternative-regular;
+    src: url(./fonts/Montserrat/Montserrat-Regular.ttf);
 }

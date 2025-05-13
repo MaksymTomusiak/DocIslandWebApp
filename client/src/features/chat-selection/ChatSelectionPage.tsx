@@ -1,35 +1,26 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { useConversation } from '../conversations/hooks/useConversation';
 import './chat-selection.css';
 
-interface ChatHistory {
-    id: string;
-    title: string;
-    lastMessage: string;
-    date: string;
-}
+const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
 
 const ChatSelectionPage = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const {
+        conversations,
+        loading,
+        error,
+        loadConversations,
+        createConversation,
+    } = useConversation(API_BASE_URL);
 
-    // Mock chat history - replace with actual data from your backend
-    const chatHistory: ChatHistory[] = [
-        {
-            id: '1',
-            title: 'Project Documentation',
-            lastMessage: 'What are the main features?',
-            date: '2024-03-20',
-        },
-        {
-            id: '2',
-            title: 'Research Paper',
-            lastMessage: 'Can you summarize the methodology?',
-            date: '2024-03-19',
-        },
-    ];
+    useEffect(() => {
+        loadConversations();
+    }, [loadConversations]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -61,14 +52,17 @@ const ChatSelectionPage = () => {
         []
     );
 
-    const handleStartChat = useCallback(() => {
+    const handleStartChat = useCallback(async () => {
         if (selectedFile) {
-            // Here you would typically upload the file and get a chat ID
-            // For now, we'll use a mock ID
-            const chatId = 'new-' + Date.now();
-            navigate(`/chat/${chatId}`);
+            try {
+                const conversation = await createConversation(selectedFile);
+                navigate(`/chat/${conversation.id}`);
+            } catch (err) {
+                // Error is handled by the hook
+                console.error('Failed to create conversation:', err);
+            }
         }
-    }, [selectedFile, navigate]);
+    }, [selectedFile, createConversation, navigate]);
 
     const handleContinueChat = useCallback(
         (chatId: string) => {
@@ -116,20 +110,32 @@ const ChatSelectionPage = () => {
 
                 <div className="chat-history">
                     <h2>Recent Chats</h2>
-                    {chatHistory.map((chat) => (
-                        <div
-                            key={chat.id}
-                            className="chat-history-item"
-                            onClick={() => handleContinueChat(chat.id)}
-                        >
-                            <div className="chat-history-content">
-                                <h3>{chat.title}</h3>
-                                <p>{chat.lastMessage}</p>
-                                <span className="chat-date">{chat.date}</span>
+                    {loading ? (
+                        <p>Loading conversations...</p>
+                    ) : error ? (
+                        <p className="error">{error}</p>
+                    ) : conversations.length === 0 ? (
+                        <p>No conversations yet</p>
+                    ) : (
+                        conversations.map((chat) => (
+                            <div
+                                key={chat.id}
+                                className="chat-history-item"
+                                onClick={() => handleContinueChat(chat.id)}
+                            >
+                                <div className="chat-history-content">
+                                    <h3>Chat {chat.id}</h3>
+                                    <p>
+                                        Created:{' '}
+                                        {new Date(
+                                            chat.createdAt
+                                        ).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <Icon icon="material-symbols:chevron-right" />
                             </div>
-                            <Icon icon="material-symbols:chevron-right" />
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
 
@@ -138,8 +144,9 @@ const ChatSelectionPage = () => {
                     <button
                         className="start-chat-button"
                         onClick={handleStartChat}
+                        disabled={loading}
                     >
-                        Start Chat
+                        {loading ? 'Creating...' : 'Start Chat'}
                     </button>
                 </div>
             )}

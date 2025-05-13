@@ -1,7 +1,7 @@
 .chat-selection-container {
-    padding: 40px;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 40px 20px;
 }
 
 .selection-header {
@@ -10,14 +10,14 @@
 }
 
 .selection-header h1 {
-    font-family: 'secondary-medium';
+    font-size: 2.5rem;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .selection-header p {
+    font-size: 1.1rem;
     color: #666;
-    font-family: 'secondary-regular';
 }
 
 .selection-content {
@@ -27,44 +27,48 @@
 }
 
 .file-drop-zone {
-    border: 2px dashed #e2e8f0;
+    background-color: white;
+    border: 2px dashed #e0e0e0;
     border-radius: 12px;
     padding: 40px;
     text-align: center;
-    background-color: white;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
     cursor: pointer;
 }
 
 .file-drop-zone.dragging {
-    border-color: #59abb2;
-    background-color: #f0f9fa;
+    border-color: #007bff;
+    background-color: #f0f7ff;
 }
 
 .upload-icon {
     font-size: 48px;
-    color: #59abb2;
-    margin-bottom: 20px;
+    color: #007bff;
+    margin-bottom: 16px;
+}
+
+.file-drop-zone p {
+    color: #666;
+    margin: 8px 0;
 }
 
 .or-text {
-    margin: 20px 0;
-    color: #666;
+    font-size: 0.9rem;
+    color: #999;
 }
 
 .file-input-label {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #59abb2;
+    background-color: #007bff;
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-family: 'secondary-medium';
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s;
 }
 
 .file-input-label:hover {
-    background-color: #4a8f94;
+    background-color: #0056b3;
 }
 
 .file-input {
@@ -74,56 +78,56 @@
 .selected-file {
     margin-top: 20px;
     padding: 12px;
-    background-color: #f8fafc;
-    border-radius: 6px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+}
+
+.selected-file span {
+    color: #333;
+    font-size: 0.9rem;
 }
 
 .chat-history {
     background-color: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chat-history h2 {
-    font-family: 'secondary-medium';
     color: #333;
     margin-bottom: 20px;
+    font-size: 1.5rem;
 }
 
 .chat-history-item {
-    padding: 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.2s ease;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .chat-history-item:hover {
-    border-color: #59abb2;
-    background-color: #f0f9fa;
+    background-color: #f0f7ff;
 }
 
 .chat-history-content h3 {
-    font-family: 'secondary-medium';
     color: #333;
     margin-bottom: 4px;
+    font-size: 1.1rem;
 }
 
 .chat-history-content p {
     color: #666;
-    margin-bottom: 4px;
-}
-
-.chat-date {
-    font-size: 12px;
-    color: #94a3b8;
+    font-size: 0.9rem;
 }
 
 .start-chat-button-container {
@@ -132,16 +136,27 @@
 }
 
 .start-chat-button {
-    padding: 14px 32px;
-    background-color: #59abb2;
+    padding: 16px 32px;
+    background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 6px;
-    font-family: 'secondary-medium';
+    border-radius: 8px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s;
 }
 
 .start-chat-button:hover {
-    background-color: #4a8f94;
+    background-color: #0056b3;
+}
+
+.start-chat-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+    margin: 20px 0;
 }

@@ -32,9 +32,7 @@ const Router = () => {
                         <Route
                             path="/select-chat"
                             element={
-                                <ClerkProtectedRoute
-                                    allowedRoles={['user', 'admin']}
-                                >
+                                <ClerkProtectedRoute>
                                     <ChatSelectionPage />
                                 </ClerkProtectedRoute>
                             }
@@ -42,9 +40,7 @@ const Router = () => {
                         <Route
                             path="/chat/:chatId"
                             element={
-                                <ClerkProtectedRoute
-                                    allowedRoles={['user', 'admin']}
-                                >
+                                <ClerkProtectedRoute>
                                     <AiChatPage />
                                 </ClerkProtectedRoute>
                             }

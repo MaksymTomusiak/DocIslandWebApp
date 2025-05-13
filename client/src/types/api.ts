@@ -1,0 +1,27 @@
+export interface MessageDto {
+    id: string;
+    content: string;
+    role: 'user' | 'assistant';
+    createdAt: string;
+    conversationId: string;
+}
+
+export interface MessageCreateDto {
+    content: string;
+    conversationId: string;
+}
+
+export interface ConversationDto {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ConversationCreateDto {
+    file: File;
+}
+
+export interface ApiError {
+    message: string;
+    statusCode: number;
+} 

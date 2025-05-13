@@ -10,31 +10,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("conversations")]
+[Authorize(AuthenticationSchemes = "Clerk")]
 public class ConversationsController(
     ISender sender,
     IConversationQueries conversationQueries) : ControllerBase
 {
-    [Authorize]
     [HttpGet]
     public async Task<IEnumerable<ConversationDto>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await conversationQueries.GetAll(cancellationToken);
-
         return entities.Select(ConversationDto.FromDomainModel);
     }
 
-    [Authorize]
     [HttpGet("{conversationId:guid}")]
     public async Task<ActionResult<ConversationDto>> GetById(Guid conversationId, CancellationToken cancellationToken)
     {
         var entity = await conversationQueries.GetById(new ConversationId(conversationId), cancellationToken);
-
         return entity.Match<ActionResult<ConversationDto>>(
             c => ConversationDto.FromDomainModel(c),
             () => NotFound());
     }
     
-    [Authorize]
     [HttpPost("add")]
     public async Task<ActionResult<ConversationDto>> Create(
         [FromForm] ConversationCreateDto request,
@@ -50,7 +46,6 @@ public class ConversationsController(
             e => e.ToObjectResult());
     }
     
-    [Authorize]
     [HttpDelete("delete/{id:guid}")]
     public async Task<ActionResult<ConversationDto>> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {

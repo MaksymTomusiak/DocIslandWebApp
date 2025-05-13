@@ -6,6 +6,7 @@ using Infrastructure;
 using Infrastructure.Services.Files.FileTextExtractors;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,27 +38,22 @@ builder.Services.AddCors(c =>
 
 // Authentication setup
 builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Clerk";
+    options.DefaultChallengeScheme = "Clerk";
+})
+.AddJwtBearer("Clerk", options =>
+{
+    options.Authority = $"https://{builder.Configuration["Clerk:Issuer"]}";
+    options.Audience = builder.Configuration["Clerk:Audience"];
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme =
-            CookieAuthenticationDefaults.AuthenticationScheme;
-    })
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/users/login";
-        options.Events.OnRedirectToLogin = context =>
-        {
-            if (context.Request.Path.StartsWithSegments("/api") || context.Request.Path.StartsWithSegments("/users"))
-            {
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            }
-
-            context.Response.Redirect(context.RedirectUri);
-            return Task.CompletedTask;
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
 
 var app = builder.Build();
 

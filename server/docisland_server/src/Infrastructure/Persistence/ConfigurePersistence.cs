@@ -47,12 +47,13 @@ public static class ConfigurePersistence
 
     private static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ConversationRepository>();
-        services.AddScoped<IConversationRepository>(provider => provider.GetRequiredService<ConversationRepository>());
-        services.AddScoped<IConversationQueries>(provider => provider.GetRequiredService<ConversationRepository>());
-
+        services.AddScoped<IConversationRepository, ConversationRepository>();
+        services.AddScoped<IConversationQueries, ConversationRepository>();
+        
         services.AddScoped<IMessageQueries, MessageRepository>();
         services.AddScoped<IMessageRepository,MessageRepository>();
 
+        services.AddScoped<IFileQueries, FileRepository>();
+        services.AddScoped<IFileRepository, FileRepository>();
     }
 }

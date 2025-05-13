@@ -23,7 +23,5 @@ public class FileConfigurator : IEntityTypeConfiguration<File>
             .WithMany(x => x.Files)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.SetNull);
-        
-        
     }
 }

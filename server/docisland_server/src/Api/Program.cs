@@ -1,7 +1,9 @@
 using Api.Modules;
 using Api.OptionsSetup;
 using Application;
+using Application.Common.Interfaces.Services.LLM;
 using Infrastructure;
+using Infrastructure.Services.Files.FileTextExtractors;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 

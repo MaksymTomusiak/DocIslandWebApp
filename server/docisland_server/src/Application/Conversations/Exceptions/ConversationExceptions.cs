@@ -21,5 +21,17 @@ public class ConversationFileNotFoundException()
 public class ConversationCantBeDeletedException() 
     : ConversationException(Guid.Empty, $"You can't delete this conversation!");
 
+public class ConversationUnsupportedFileTypeException(string fileType)
+    : ConversationException(Guid.Empty, $"Unsupported file type: {fileType}!");
+
+public class ConversationFileSavingException(Exception innerException)
+    : ConversationException(Guid.Empty, $"Error while saving conversation file!", innerException);
+
+public class ConversationLlmException(Exception innerException)
+    : ConversationException(Guid.Empty, $"Error while creating conversation!", innerException);
+
+public class ConversationFileDeletingException(Exception innerException)
+    : ConversationException(Guid.Empty, $"Error while deleting conversation file!", innerException);
+
 public class ConversationUnknownException(Guid id, Exception innerException)
     : ConversationException(id, $"Unknown exception for the Conversation under id: {id}!", innerException);

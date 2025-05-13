@@ -28,16 +28,7 @@ const Router = () => {
                         }
                     />
                     <Route path="/" element={<Layout />}>
-                        <Route
-                            index
-                            element={
-                                <ClerkProtectedRoute
-                                    allowedRoles={['user', 'admin']}
-                                >
-                                    <HomePage />
-                                </ClerkProtectedRoute>
-                            }
-                        />
+                        <Route index element={<HomePage />} />
                         <Route
                             path="/select-chat"
                             element={

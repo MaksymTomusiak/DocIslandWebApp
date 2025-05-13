@@ -1,0 +1,147 @@
+.chat-selection-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.selection-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.selection-header h1 {
+    font-family: 'secondary-medium';
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.selection-header p {
+    color: #666;
+    font-family: 'secondary-regular';
+}
+
+.selection-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.file-drop-zone {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    background-color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-drop-zone.dragging {
+    border-color: #59abb2;
+    background-color: #f0f9fa;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #59abb2;
+    margin-bottom: 20px;
+}
+
+.or-text {
+    margin: 20px 0;
+    color: #666;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #59abb2;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'secondary-medium';
+    transition: background-color 0.2s ease;
+}
+
+.file-input-label:hover {
+    background-color: #4a8f94;
+}
+
+.file-input {
+    display: none;
+}
+
+.selected-file {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #f8fafc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-history {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.chat-history h2 {
+    font-family: 'secondary-medium';
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.chat-history-item {
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.chat-history-item:hover {
+    border-color: #59abb2;
+    background-color: #f0f9fa;
+}
+
+.chat-history-content h3 {
+    font-family: 'secondary-medium';
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.chat-history-content p {
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.chat-date {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.start-chat-button-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.start-chat-button {
+    padding: 14px 32px;
+    background-color: #59abb2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'secondary-medium';
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.start-chat-button:hover {
+    background-color: #4a8f94;
+}

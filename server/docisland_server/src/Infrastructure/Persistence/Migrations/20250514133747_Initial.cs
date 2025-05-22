@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "varchar(255)", nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<string>(type: "text", nullable: false),
                     email_verification_token = table.Column<string>(type: "text", nullable: true),
                     email_verification_token_expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    role_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    role_id = table.Column<string>(type: "text", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
@@ -81,7 +81,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
@@ -103,7 +103,7 @@ namespace Infrastructure.Persistence.Migrations
                     login_provider = table.Column<string>(type: "text", nullable: false),
                     provider_key = table.Column<string>(type: "text", nullable: false),
                     provider_display_name = table.Column<string>(type: "text", nullable: true),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    user_id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,8 +120,8 @@ namespace Infrastructure.Persistence.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    role_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    role_id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,7 +144,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
                     login_provider = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     value = table.Column<string>(type: "text", nullable: true)
@@ -167,7 +167,7 @@ namespace Infrastructure.Persistence.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     original_file_name = table.Column<string>(type: "varchar(500)", nullable: false),
                     file_size_bytes = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    user_id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,7 +185,7 @@ namespace Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
                     file_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

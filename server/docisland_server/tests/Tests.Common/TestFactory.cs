@@ -1,9 +1,11 @@
-using Application.Common.Interfaces.Services;
+using System.IdentityModel.Tokens.Jwt;
 using Application.Common.Interfaces.Services.Emails;
 using Application.Common.Interfaces.Services.Files;
 using Application.Common.Interfaces.Services.LLM;
 using Domain.Conversations;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,6 +18,8 @@ using Moq;
 using Npgsql;
 using Testcontainers.PostgreSql;
 using Xunit;
+using Microsoft.IdentityModel.Tokens;
+using Tests.Common.TokenValidator;
 
 namespace Tests.Common;
 
@@ -41,6 +45,21 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
         builder.ConfigureTestServices(services =>
         {
             RegisterDatabase(services);
+
+            // Configure existing Clerk scheme for tests
+            services.Configure<JwtBearerOptions>("Clerk", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = false,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    RequireSignedTokens = false
+                };
+                options.SecurityTokenValidators.Clear();
+                options.SecurityTokenValidators.Add(new NoSignatureTokenValidator());
+            });
 
             // Remove and mock IEmailService
             services.RemoveServiceByType(typeof(IEmailService));

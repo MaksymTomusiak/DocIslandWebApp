@@ -11,7 +11,7 @@ using Tests.Common;
 using Tests.Data;
 using File = Domain.Files.File;
 
-namespace Api.Tests.Intagration.Messages;
+namespace Api.Tests.Integration.Messages;
 
 public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
 {
@@ -28,6 +28,8 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
         _newFile = FilesData.NewFile(_mainUser.Id);
         _newConversation = ConversationsData.NewConversation(_mainUser.Id, _newFile.Id);
         _newMessage = MessagesData.NewMessage(_newConversation.Id);
+        var token = TestsExtensions.GenerateMockJwt(_mainUser.Id);
+        SetCustomAuthorizationHeader(token);
     }
 
     [Fact]
@@ -35,8 +37,7 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var request = new MessageCreateDto(_newConversation.Id.Value, _newMessage.Content);
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_mainUser, _userRole));
-
+        
         // Act
         var response = await Client.PostAsJsonAsync("messages/add", request);
 

@@ -1,43 +1,43 @@
 namespace Application.Users.Exceptions;
 
-public class UserException(Guid id, string message, Exception? innerException = null)
+public class UserException(string id, string message, Exception? innerException = null)
     : Exception(message, innerException)
 {
-    public Guid Id { get; } = id;
+    public string Id { get; } = id;
 }
 
-public class UserNotFoundException(Guid id) 
+public class UserNotFoundException(string id) 
     : UserException(id, $"User under id: {id} not found!");
 
 public class UserIdNotFoundException() 
-    : UserException(Guid.Empty, $"User id not found!");
+    : UserException(string.Empty, $"User id not found!");
 
 public class UserRoleNotFoundException() 
-    : UserException(Guid.Empty, $"User role not found!");
+    : UserException(string.Empty, $"User role not found!");
 
-public class UserAlreadyRegisteredException(Guid id) 
+public class UserAlreadyRegisteredException(string id) 
     : UserException(id, $"User under id: {id} is already registered on this course!");
 
-public class UserWithNameAlreadyExistsException(Guid id) 
+public class UserWithNameAlreadyExistsException(string id) 
     : UserException(id, $"User under such user name already exists!");
 
-public class UserWithEmailAlreadyExistsException(Guid id)
+public class UserWithEmailAlreadyExistsException(string id)
     : UserException(id, $"User under such email already exists!");
 
-public class EmailNotVerifiedException(Guid id)
+public class EmailNotVerifiedException(string id)
     : UserException(id, $"User email is not verified!");
 
-public class InvalidVerificationTokenException(Guid id)
+public class InvalidVerificationTokenException(string id)
     : UserException(id, $"Invalid verification token!");
 
-public class EmailVerificationTokenExpiredException(Guid id)
+public class EmailVerificationTokenExpiredException(string id)
     : UserException(id, $"Email verification token expired!");
 
 public class InvalidCredentialsException() 
-    : UserException(Guid.Empty, $"Invalid credentials!");
+    : UserException(string.Empty, $"Invalid credentials!");
 
 public class UserUnauthorizedAccessException(string message) 
-    : UserException(Guid.Empty, message);
+    : UserException(string.Empty, message);
 
-public class UserUnknownException(Guid id, Exception innerException)
+public class UserUnknownException(string id, Exception innerException)
     : UserException(id, $"Unknown exception for the User under id: {id}!", innerException);

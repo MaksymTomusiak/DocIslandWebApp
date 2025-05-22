@@ -4,7 +4,7 @@ namespace Tests.Data;
 
 public static class FilesData
 {
-    public static File NewFile(Guid userId) =>
+    public static File NewFile(string userId) =>
         File.New(
             "Test file",
             502301,

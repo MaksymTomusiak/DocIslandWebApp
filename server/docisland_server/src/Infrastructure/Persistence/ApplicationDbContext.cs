@@ -9,7 +9,7 @@ using File = Domain.Files.File;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User, Role, Guid>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User, Role, string>(options)
 {
     public DbSet<Conversation> Conversations { get; set; }
     public DbSet<Message> Messages { get; set; }

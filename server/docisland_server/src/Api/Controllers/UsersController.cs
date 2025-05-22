@@ -29,8 +29,8 @@ public class UsersController(
     }
     
     [Authorize]
-    [HttpDelete("delete/{userId:guid}")]
-    public async Task<ActionResult> Delete([FromRoute] Guid userId)
+    [HttpDelete("delete/{userId}")]
+    public async Task<ActionResult> Delete([FromRoute] string userId)
     {
         var command = new DeleteUserCommand { UserId = userId };
         var result = await sender.Send(command);

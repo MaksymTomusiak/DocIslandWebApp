@@ -11,10 +11,12 @@ public class FileConfigurator : IEntityTypeConfiguration<File>
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
-            .HasConversion(x => x.Value, x => new FileId(x));
+            .HasConversion(x => x.Value, x => new FileId(x))
+            .IsRequired();
         
         builder.Property(x => x.OriginalFileName)
-            .HasColumnType("varchar(500)").IsRequired();
+            .HasColumnType("varchar(500)").IsRequired()
+            .IsRequired();
 
         builder.Property(x => x.FileSizeBytes)
             .IsRequired();

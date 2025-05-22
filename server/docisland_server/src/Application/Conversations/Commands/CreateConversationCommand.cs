@@ -45,7 +45,7 @@ public class CreateConversationCommandHandler(
         return await CreateConversation(request.File, sessionUser.Id, cancellationToken);
     }
 
-    private async Task<Either<ConversationException, Conversation>> CreateConversation(IFormFile file, Guid sessionUserId, CancellationToken cancellationToken)
+    private async Task<Either<ConversationException, Conversation>> CreateConversation(IFormFile file, string sessionUserId, CancellationToken cancellationToken)
     {
         try
         {
@@ -85,7 +85,7 @@ public class CreateConversationCommandHandler(
         }
         catch (Exception ex)
         {
-            return new ConversationUnknownException(Guid.Empty, ex);
+            return new ConversationUnknownException(String.Empty, ex);
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Tests.Common;
 using Tests.Data;
 
-namespace Api.Tests.Intagration.Users;
+namespace Api.Tests.Integration.Users;
 
 public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
 {
@@ -51,7 +51,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var userId = _secondaryUser.Id;
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_secondaryUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.DeleteAsync($"users/delete/{userId}");
@@ -68,7 +68,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var userId = _testAdminUser.Id;
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_testAdminUser, _adminRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.DeleteAsync($"users/delete/{userId}");
@@ -85,7 +85,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var userId = _mainUser.Id;
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_secondaryUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.DeleteAsync($"users/delete/{userId}");
@@ -103,7 +103,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var userId = _testAdminUser.Id;
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_secondaryUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.DeleteAsync($"users/delete/{userId}");
@@ -140,7 +140,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var oldPassword = TestPassword;
         var newPassword = "NewPass123!";
         var request = new UserUpdatePasswordDto(oldPassword, newPassword);
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_mainUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.PutAsJsonAsync("users/update-password", request);
@@ -162,7 +162,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var oldPassword = "WrongPass123!";
         var newPassword = "NewPass123!";
         var request = new UserUpdatePasswordDto(oldPassword, newPassword);
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_mainUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.PutAsJsonAsync("users/update-password", request);
@@ -178,7 +178,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var newUserName = "UpdatedUserName";
         var request = new UserUpdateUserNameDto(newUserName);
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_mainUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.PutAsJsonAsync("users/update-username", request);
@@ -198,7 +198,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var newUserName = _secondaryUser.UserName;
         var request = new UserUpdateUserNameDto(newUserName!);
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_mainUser, _userRole));
+        SetCustomAuthorizationHeader(TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id));
 
         // Act
         var response = await Client.PutAsJsonAsync("users/update-username", request);

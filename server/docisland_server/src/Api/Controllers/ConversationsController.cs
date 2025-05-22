@@ -1,4 +1,5 @@
 using Api.Dtos;
+using Api.Extensions;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Conversations.Commands;
@@ -19,6 +20,18 @@ public class ConversationsController(
     public async Task<IEnumerable<ConversationDto>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await conversationQueries.GetAll(cancellationToken);
+        return entities.Select(ConversationDto.FromDomainModel);
+    }
+    
+    [HttpGet("user")]
+    public async Task<IEnumerable<ConversationDto>> GetAllByUser( CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new UnauthorizedAccessException("User ID not found in token.");
+
+        var entities = await conversationQueries.GetByUser(userId, cancellationToken);
         return entities.Select(ConversationDto.FromDomainModel);
     }
 

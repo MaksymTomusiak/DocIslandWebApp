@@ -13,7 +13,7 @@ namespace Application.Users.Commands;
 
 public record DeleteUserCommand : IRequest<Either<UserException, string>>
 {
-    public required Guid UserId { get; init; }
+    public required string UserId { get; init; }
 }
 
 public class DeleteUserCommandHandler(
@@ -41,13 +41,13 @@ public class DeleteUserCommandHandler(
         var targetUserIsAdmin = await userManager.IsInRoleAsync(userToDelete, "Admin");
 
         // A normal user can only delete their own account
-        if (!sessionUserIsAdmin && new Guid(sessionUserId) != userToDelete.Id)
+        if (!sessionUserIsAdmin &&sessionUserId != userToDelete.Id)
         {
             return new UserUnauthorizedAccessException("You can only delete your own account.");
         }
 
         // An admin can delete themselves or normal users, but not another admin
-        if (sessionUserIsAdmin && targetUserIsAdmin && new Guid(sessionUserId) != userToDelete.Id)
+        if (sessionUserIsAdmin && targetUserIsAdmin && sessionUserId != userToDelete.Id)
         {
             return new UserUnauthorizedAccessException("Admins cannot delete other admin accounts.");
         }

@@ -33,5 +33,5 @@ public class ConversationLlmException(Exception innerException)
 public class ConversationFileDeletingException(Exception innerException)
     : ConversationException(Guid.Empty, $"Error while deleting conversation file!", innerException);
 
-public class ConversationUnknownException(Guid id, Exception innerException)
-    : ConversationException(id, $"Unknown exception for the Conversation under id: {id}!", innerException);
+public class ConversationUnknownException(string id, Exception innerException)
+    : ConversationException(Guid.Empty, $"Unknown exception for the Conversation under id: {id}!", innerException);

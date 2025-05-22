@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Tests.Common;
 using Tests.Data;
 
-namespace Api.Tests.Intagration.Users;
+namespace Api.Tests.Integration.Users;
 
 public class AuthControllerTests  : BaseIntegrationTest, IAsyncLifetime
 {

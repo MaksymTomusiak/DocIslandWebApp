@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Tests.Common;
 using Tests.Data;
 
-namespace Api.Tests.Intagration.Conversations;
+namespace Api.Tests.Integration.Conversations;
 using File = Domain.Files.File;
 
 public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime

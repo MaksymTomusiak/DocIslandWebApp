@@ -5,11 +5,11 @@ namespace Tests.Data;
 public static class RolesData
 {
     public static Role AdminRole =>
-        new Role("Admin", "Admin role");
+        new Role("1","Admin", "Admin role");
     
     public static Role UserRole =>
-        new Role("User", "User role");
+        new Role("2","User", "User role");
 
     public static Role TestRole =>
-        new("Test", "Test Role");
+        new("3","Test", "Test Role");
 }

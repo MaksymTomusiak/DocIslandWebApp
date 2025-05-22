@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Tests.Common;
 using Tests.Data;
 
-namespace Api.Tests.Intagration.Roles;
+namespace Api.Tests.Integration.Roles;
 
 public class RolesControllerTests: BaseIntegrationTest, IAsyncLifetime
 {
@@ -22,7 +22,7 @@ public class RolesControllerTests: BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateRole()
     {
         // Arrange
-        var request = new Role("NewRole", "NewRoleDescription");
+        var request = new Role(Guid.NewGuid().ToString(), "NewRole", "NewRoleDescription");
         
         // Act
         var response = await Client.PostAsJsonAsync("roles/add", request);
@@ -45,7 +45,7 @@ public class RolesControllerTests: BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateRoleBecauseAlreadyExists()
     {
         // Arrange
-        var request = new Role(_testRole.Name!, _testRole.Description);
+        var request = new Role(Guid.NewGuid().ToString(), _testRole.Name!, _testRole.Description);
         
         // Act
         var response = await Client.PostAsJsonAsync("roles/add", request);

@@ -5,6 +5,6 @@ namespace Tests.Data;
 
 public class ConversationsData
 {
-    public static Conversation NewConversation(Guid userId, FileId fileId) =>
+    public static Conversation NewConversation(string userId, FileId fileId) =>
         Conversation.New(userId, fileId);
 }

@@ -36,8 +36,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("file_id");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -68,8 +69,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(500)")
                         .HasColumnName("original_file_name");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -115,9 +117,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Roles.Role", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
                         .HasColumnName("id");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -152,9 +153,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
                         .HasColumnName("id");
 
                     b.Property<int>("AccessFailedCount")
@@ -239,7 +239,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,8 +256,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("claim_value");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("role_id");
 
                     b.HasKey("Id")
@@ -269,7 +270,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -286,8 +287,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("claim_value");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -299,7 +301,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text")
@@ -313,8 +315,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("provider_display_name");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
                     b.HasKey("LoginProvider", "ProviderKey")
@@ -326,14 +329,14 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("RoleId")
+                        .HasColumnType("text")
                         .HasColumnName("role_id");
 
                     b.HasKey("UserId", "RoleId")
@@ -345,10 +348,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .HasColumnType("text")
                         .HasColumnName("user_id");
 
                     b.Property<string>("LoginProvider")
@@ -414,7 +417,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Conversation");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Domain.Roles.Role", null)
                         .WithMany()
@@ -424,7 +427,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_asp_net_role_claims_asp_net_roles_role_id");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("Domain.Users.User", null)
                         .WithMany()
@@ -434,7 +437,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_asp_net_user_claims_asp_net_users_user_id");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("Domain.Users.User", null)
                         .WithMany()
@@ -444,7 +447,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_asp_net_user_logins_asp_net_users_user_id");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Domain.Roles.Role", null)
                         .WithMany()
@@ -461,7 +464,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_users_user_id");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("Domain.Users.User", null)
                         .WithMany()

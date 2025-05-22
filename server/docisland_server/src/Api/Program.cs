@@ -1,11 +1,7 @@
+using Api.Middleware;
 using Api.Modules;
-using Api.OptionsSetup;
 using Application;
-using Application.Common.Interfaces.Services.LLM;
 using Infrastructure;
-using Infrastructure.Services.Files.FileTextExtractors;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +21,6 @@ builder.Services.SetupServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure JWT options
-builder.Services.ConfigureOptions<JwtOptionsSetup>();
-builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllowOrigin",
@@ -71,6 +64,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add Clerk user sync middleware
+app.UseClerkUserSync();
 
 await app.InitializeDb();
 app.MapControllers();

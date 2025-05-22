@@ -11,10 +11,12 @@ public class ConversationConfigurator : IEntityTypeConfiguration<Conversation>
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
-            .HasConversion(x => x.Value, x => new ConversationId(x));
+            .HasConversion(x => x.Value, x => new ConversationId(x))
+            .IsRequired();
         
         builder.Property(x => x.CreatedAt)
-            .HasConversion(new DateTimeUtcConverter());
+            .HasConversion(new DateTimeUtcConverter())
+            .IsRequired();
         
         builder.HasOne(x => x.User)
             .WithMany(x => x.Conversations)
@@ -24,6 +26,7 @@ public class ConversationConfigurator : IEntityTypeConfiguration<Conversation>
         builder.HasOne(x => x.File)
             .WithOne(x => x.Conversation)
             .HasForeignKey<Conversation>(x => x.FileId)
+            .IsRequired()
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

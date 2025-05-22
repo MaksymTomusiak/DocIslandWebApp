@@ -28,14 +28,14 @@ public class UpdateUserNameCommandHandler(
         var sessionUser = await userManager.FindByIdAsync(sessionUserId);
         if (sessionUser == null)
         {
-            return new UserNotFoundException(new Guid(sessionUserId));
+            return new UserNotFoundException(sessionUserId);
         }
 
         var existingUser = await userManager.FindByNameAsync(request.UserName);
 
         if (existingUser != null)
         {
-            return new UserWithNameAlreadyExistsException(Guid.Parse(sessionUserId));
+            return new UserWithNameAlreadyExistsException(sessionUserId);
         }
         
         sessionUser.UserName = request.UserName;

@@ -4,7 +4,7 @@ namespace Api.Dtos;
 
 public record ConversationDto(
     Guid Id,
-    Guid UserId,
+    string UserId,
     Guid FileId,
     DateTime CreatedAt)
 {

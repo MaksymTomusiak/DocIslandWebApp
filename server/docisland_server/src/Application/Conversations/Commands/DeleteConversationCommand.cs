@@ -55,13 +55,13 @@ public class DeleteConversationCommandHandler(
             () => Task.FromResult<Either<ConversationException, Conversation>>(new ConversationNotFoundException(request.ConversationId)));
     }
 
-    private async Task<Either<ConversationException, Conversation>> DeleteConversation(Conversation conversation, Guid sessionUserId, CancellationToken cancellationToken)
+    private async Task<Either<ConversationException, Conversation>> DeleteConversation(Conversation conversation, string sessionUserId, CancellationToken cancellationToken)
     {
         try
         {
             const string conversationsFiles = "conversations-files";
             var conversationFile = await fileQueries.GetByConversation(conversation.Id, cancellationToken);
-            var fileDeleteResult = await conversationFile.Match<Task<Either<ConversationException, bool>>>(
+            var fileDeleteResult = await conversationFile.Match(
                 async f =>
                 {
                     try

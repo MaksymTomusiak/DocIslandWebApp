@@ -29,7 +29,7 @@ public class UpdateUserPasswordCommandHandler(
         var sessionUser = await userManager.FindByIdAsync(sessionUserId);
         if (sessionUser == null)
         {
-            return new UserNotFoundException(new Guid(sessionUserId));
+            return new UserNotFoundException(sessionUserId);
         }
 
         var result = await userManager.ChangePasswordAsync(sessionUser, request.OldPassword, request.NewPassword);

@@ -8,6 +8,10 @@ export class MessageApi {
         this.client = new HttpClient({ baseURL }, signal, getToken);
     }
 
+    async getMessagesByConversationId(conversationId: string): Promise<MessageDto[]> {
+        return this.client.get<MessageDto[]>(`/messages/conversation/${conversationId}`);
+    }
+
     async getMessages(): Promise<MessageDto[]> {
         return this.client.get<MessageDto[]>('/messages');
     }

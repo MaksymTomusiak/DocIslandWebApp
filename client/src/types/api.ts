@@ -1,8 +1,8 @@
 export interface MessageDto {
     id: string;
     content: string;
-    role: 'user' | 'assistant';
-    createdAt: string;
+    isResponse: boolean;
+    createdAt: Date;
     conversationId: string;
 }
 

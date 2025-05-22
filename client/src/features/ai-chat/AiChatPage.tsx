@@ -72,17 +72,15 @@ const AiChatPage = () => {
                         <div
                             key={msg.id}
                             className={`message ${
-                                msg.role === 'user'
-                                    ? 'user-message'
-                                    : 'ai-message'
+                                msg.isResponse ? 'ai-message' : 'user-message'
                             }`}
                         >
                             <div className="message-content">
                                 <div className="message-header">
                                     <span className="message-role">
-                                        {msg.role === 'user'
-                                            ? 'You'
-                                            : 'AI Assistant'}
+                                        {msg.isResponse
+                                            ? 'AI Assistant'
+                                            : 'You'}
                                     </span>
                                     <span className="message-time">
                                         {new Date(

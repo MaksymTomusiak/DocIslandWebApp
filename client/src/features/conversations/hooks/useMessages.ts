@@ -2,6 +2,10 @@ import { useState, useCallback, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { MessageApi } from '../services/messageApi';
 import { MessageDto, MessageCreateDto } from '../../../types/api';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 export const useMessages = (baseURL: string, conversationId: string) => {
     const { getToken } = useAuth();
@@ -19,10 +23,8 @@ export const useMessages = (baseURL: string, conversationId: string) => {
         try {
             setLoading(true);
             setError(null);
-            const data = await messageApi.getMessages();
-            // Filter messages for this conversation
-            const conversationMessages = data.filter(msg => msg.conversationId === conversationId);
-            setMessages(conversationMessages);
+            const data = await messageApi.getMessagesByConversationId(conversationId);
+            setMessages(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to load messages');
         } finally {
@@ -38,6 +40,17 @@ export const useMessages = (baseURL: string, conversationId: string) => {
                 conversationId,
                 content
             };
+
+            const tempId = `temp-${Date.now()}`
+            const userMessage: MessageDto = {
+                id: tempId,
+                content: content,
+                isResponse: false,
+                createdAt: dayjs().utc(false).toDate(),
+                conversationId: conversationId
+            }
+            setMessages(prev => [...prev, userMessage]);
+
             const response = await messageApi.createMessage(newMessage);
             setMessages(prev => [...prev, response]);
             return response;

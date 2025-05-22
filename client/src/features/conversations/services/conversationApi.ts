@@ -12,6 +12,10 @@ export class ConversationApi {
         return this.client.get<ConversationDto[]>('/conversations');
     }
 
+    async getConversationsByUserId(): Promise<ConversationDto[]> {
+        return this.client.get<ConversationDto[]>(`/conversations/user`);
+    }
+
     async getConversation(id: string): Promise<ConversationDto> {
         return this.client.get<ConversationDto>(`/conversations/${id}`);
     }

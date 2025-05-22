@@ -20,7 +20,7 @@ const Router = () => {
             <BrowserRouter>
                 <Routes>
                     <Route
-                        path="/login"
+                        path="/login/*"
                         element={
                             <SignedOut>
                                 <SignInPage />
@@ -38,7 +38,7 @@ const Router = () => {
                             }
                         />
                         <Route
-                            path="/chat/:chatId"
+                            path="/chat/:conversationId"
                             element={
                                 <ClerkProtectedRoute>
                                     <AiChatPage />

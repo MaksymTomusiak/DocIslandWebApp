@@ -2,10 +2,11 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
+import Footer from './Footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
-import './home-page.css';
 import { Icon } from '@iconify/react';
+import './home-page.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -540,6 +541,7 @@ const HomePage = () => {
                     </Accordion>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

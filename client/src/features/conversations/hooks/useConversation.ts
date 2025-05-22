@@ -19,7 +19,7 @@ export const useConversation = (baseURL: string) => {
         try {
             setLoading(true);
             setError(null);
-            const data = await conversationApi.getConversations();
+            const data = await conversationApi.getConversationsByUserId();
             setConversations(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to load conversations');

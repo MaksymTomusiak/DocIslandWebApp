@@ -1,15 +1,23 @@
-import { HttpClient } from '../../../utils/http/HttpClient';
-import { MessageDto, MessageCreateDto } from '../../../types/api';
+import { HttpClient } from '../utils/http/HttpClient';
+import { MessageDto, MessageCreateDto } from '../types/api';
 
 export class MessageApi {
     private client: HttpClient;
 
-    constructor(baseURL: string, signal: AbortSignal, getToken?: () => Promise<string | null>) {
+    constructor(
+        baseURL: string,
+        signal: AbortSignal,
+        getToken?: () => Promise<string | null>
+    ) {
         this.client = new HttpClient({ baseURL }, signal, getToken);
     }
 
-    async getMessagesByConversationId(conversationId: string): Promise<MessageDto[]> {
-        return this.client.get<MessageDto[]>(`/messages/conversation/${conversationId}`);
+    async getMessagesByConversationId(
+        conversationId: string
+    ): Promise<MessageDto[]> {
+        return this.client.get<MessageDto[]>(
+            `/messages/conversation/${conversationId}`
+        );
     }
 
     async getMessages(): Promise<MessageDto[]> {
@@ -27,4 +35,4 @@ export class MessageApi {
     async deleteMessage(id: string): Promise<void> {
         await this.client.delete(`/messages/delete/${id}`);
     }
-} 
+}

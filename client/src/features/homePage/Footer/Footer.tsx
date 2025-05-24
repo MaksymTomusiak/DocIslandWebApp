@@ -80,21 +80,29 @@ const Footer = () => {
                         follow us on social media for updates, tips, and more.
                     </div>
                     <div className="text-group-link">
-                        Email: support@docisland.com
+                        <a href="mailto:support@docisland.com">
+                            Email: support@docisland.com
+                        </a>
                     </div>
                     <div className="social-media-icons">
-                        <Icon
-                            className="social-media-icon"
-                            icon="mdi:instagram"
-                        />
-                        <Icon
-                            className="social-media-icon"
-                            icon="prime:twitter"
-                        />
-                        <Icon
-                            className="social-media-icon"
-                            icon="ic:baseline-facebook"
-                        />
+                        <a href="https://www.instagram.com/docisland">
+                            <Icon
+                                className="social-media-icon"
+                                icon="mdi:instagram"
+                            />
+                        </a>
+                        <a href="https://www.twitter.com/docisland">
+                            <Icon
+                                className="social-media-icon"
+                                icon="prime:twitter"
+                            />
+                        </a>
+                        <a href="https://www.facebook.com/docisland">
+                            <Icon
+                                className="social-media-icon"
+                                icon="ic:baseline-facebook"
+                            />
+                        </a>
                     </div>
                 </div>
             </div>

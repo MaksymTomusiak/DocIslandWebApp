@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useConversation } from '../conversations/hooks/useConversation';
+import { useConversation } from '../../hooks/useConversation';
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
 

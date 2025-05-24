@@ -28,10 +28,11 @@ html::-webkit-scrollbar-thumb:hover {
     background-color: #f9fafb;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    padding-top: 80px;
 }
 
 .hero {
-    padding-top: 80px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

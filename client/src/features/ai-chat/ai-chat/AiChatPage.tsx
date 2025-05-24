@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useMessages } from '../../conversations/hooks/useMessages';
+import { useMessages } from '../../../hooks/useMessages';
 import Spinner from '../../../components/common/Spinner';
 import ConversationsSidebar from '../conversations-sidebar/ConversationsSidebar';
-import { useConversation } from '../../conversations/hooks/useConversation';
+import { useConversation } from '../../../hooks/useConversation';
 import './ai-chat.css';
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
@@ -108,14 +108,13 @@ const AiChatPage = () => {
     };
 
     const handleDeleteConversation = async (id: string) => {
-        if (id === conversationId) {
-            navigate('/select-chat', { replace: true });
-        }
-
         try {
             await deleteConversation(id);
         } catch (err) {
             console.error('Failed to delete conversation:', err);
+        }
+        if (id === conversationId) {
+            navigate('/select-chat', { replace: true });
         }
     };
 
@@ -153,7 +152,10 @@ const AiChatPage = () => {
                             {msg.isResponse ? 'AI Assistant' : 'You'}
                         </span>
                         <span className="message-time">
-                            {new Date(msg.createdAt).toLocaleTimeString()}
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
                         </span>
                     </div>
                     <p>{msg.content}</p>

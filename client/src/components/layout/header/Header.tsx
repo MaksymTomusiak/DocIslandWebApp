@@ -5,7 +5,7 @@ import { CustomUserButton } from '../../auth/CustomClerkComponents';
 import './header.css';
 
 const Header = () => {
-    const { isSignedIn } = useUser();
+    const { isSignedIn, isLoaded } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
     const [showShadow, setShowShadow] = useState(false);
@@ -56,10 +56,15 @@ const Header = () => {
         }
     };
 
+    // Return a placeholder with the same height during loading
+    if (!isLoaded) {
+        return <div style={{ height: '80px' }} />;
+    }
+
     return (
         <header className={`header ${showShadow ? 'shadow' : ''}`}>
             <div className="logo" onClick={() => handleNavigation('#hero')}>
-                <img src="./header/logo.svg" alt="Logo" />
+                <img src="/header/logo.svg" alt="Logo" />
             </div>
             <div className="header_menu">
                 <p onClick={() => handleNavigation('#hero')}>Home</p>
@@ -73,7 +78,7 @@ const Header = () => {
             ) : (
                 <div className="login_button" onClick={handleAuthClick}>
                     <div>Login</div>
-                    <img src="./header/arrowRightBlack.svg" alt="Arrow" />
+                    <img src="/header/arrowRightBlack.svg" alt="Arrow" />
                 </div>
             )}
         </header>

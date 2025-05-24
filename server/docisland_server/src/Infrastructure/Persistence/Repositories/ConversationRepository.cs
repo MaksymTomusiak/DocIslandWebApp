@@ -13,12 +13,14 @@ public class ConversationRepository(ApplicationDbContext context) : IConversatio
         return await context.Conversations
             .AsNoTracking()
             .Include(x => x.User)
+            .Include(x => x.File)
             .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<Conversation>> GetByUser(string userId, CancellationToken cancellationToken)
     {
         return await context.Conversations
+            .Include(x => x.File)
             .AsNoTracking()
             .Where(x => x.UserId == userId)
             .OrderByDescending(x => x.CreatedAt)
@@ -28,6 +30,7 @@ public class ConversationRepository(ApplicationDbContext context) : IConversatio
     public async Task<Option<Conversation>> GetById(ConversationId id, CancellationToken cancellationToken)
     {
         var entity = await context.Conversations
+            .Include(x => x.File)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         

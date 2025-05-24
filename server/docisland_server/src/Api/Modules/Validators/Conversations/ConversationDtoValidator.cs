@@ -9,7 +9,7 @@ public class ConversationDtoValidator : AbstractValidator<ConversationDto>
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.UserId).NotEmpty();
-        RuleFor(x => x.FileId).NotEmpty();
+        RuleFor(x => x.FileName).NotEmpty();
         RuleFor(x => x.CreatedAt).NotEmpty();
     }
 }

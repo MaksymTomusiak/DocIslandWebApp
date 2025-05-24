@@ -46,7 +46,7 @@ public class CreateMessageCommandHandler(
 
                 try
                 {
-                    var response = await llmService.AskQuestionAsync(conversationId, request.Content, cancellationToken);
+                    var response = await llmService.AskQuestionAsync(conversation.FileId.Value, request.Content, cancellationToken);
                     
                     return await CreateMessage(response, conversationId, cancellationToken, isResponse: true);
                 }

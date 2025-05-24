@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Application.Common.Interfaces.Services.Files;
 using Application.Common.Interfaces.Services.LLM;
-using Domain.Conversations;
+using Domain.Files;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services.LLM;
@@ -11,7 +11,7 @@ public class LlmService(HttpClient httpClient, IFileStorageService fileStorageSe
 {
     private readonly string _llmEndpoint = configuration["LLMSettings:ServerUrl"];
 
-    public async Task<string> AskQuestionAsync(ConversationId conversationId, string question, CancellationToken cancellationToken)
+    public async Task<string> AskQuestionAsync(Guid fileId, string question, CancellationToken cancellationToken)
     {
         var askEndpoint = _llmEndpoint + "/ask";
         
@@ -20,7 +20,7 @@ public class LlmService(HttpClient httpClient, IFileStorageService fileStorageSe
         string? context = null;
         try
         {
-            context = await fileStorageService.GetFileContentAsync(conversationsFiles, conversationId.Value, cancellationToken);
+            context = await fileStorageService.GetFileContentAsync(conversationsFiles, fileId, cancellationToken);
         }
         catch (Exception ex)
         {

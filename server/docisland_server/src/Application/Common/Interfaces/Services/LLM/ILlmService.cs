@@ -1,8 +1,8 @@
-using Domain.Conversations;
+using Domain.Files;
 
 namespace Application.Common.Interfaces.Services.LLM;
 
 public interface ILlmService
 {
-    Task<string> AskQuestionAsync(ConversationId conversationId, string question, CancellationToken cancellationToken);
+    Task<string> AskQuestionAsync(Guid fileId, string question, CancellationToken cancellationToken);
 }

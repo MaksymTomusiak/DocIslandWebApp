@@ -83,7 +83,7 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
             services.RemoveServiceByType(typeof(ILlmService));
             var llmServiceMock = new Mock<ILlmService>();
             llmServiceMock
-                .Setup(x => x.AskQuestionAsync(It.IsAny<ConversationId>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.AskQuestionAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("Mocked LLM response");
             services.AddScoped(_ => llmServiceMock.Object);
         });

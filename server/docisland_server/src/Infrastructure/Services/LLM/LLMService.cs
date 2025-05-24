@@ -1,20 +1,32 @@
 using System.Text;
 using System.Text.Json;
+using Application.Common.Interfaces.Services.Files;
 using Application.Common.Interfaces.Services.LLM;
 using Domain.Conversations;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services.LLM;
 
-public class LlmService(HttpClient httpClient, IConfiguration configuration) : ILlmService
+public class LlmService(HttpClient httpClient, IFileStorageService fileStorageService, IConfiguration configuration) : ILlmService
 {
     private readonly string _llmEndpoint = configuration["LLMSettings:ServerUrl"];
 
     public async Task<string> AskQuestionAsync(ConversationId conversationId, string question, CancellationToken cancellationToken)
     {
         var askEndpoint = _llmEndpoint + "/ask";
+        
+        const string conversationsFiles = "conversations-files";
 
-        var prompt = LlmPromptTemplates.AskQuestionPrompt(conversationId, question);
+        string? context = null;
+        try
+        {
+            context = await fileStorageService.GetFileContentAsync(conversationsFiles, conversationId.Value, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            context = string.Empty;
+        }
+        var prompt = LlmPromptTemplates.AskQuestionPrompt(context!, question);
 
         var payload = new
         {
@@ -39,28 +51,5 @@ public class LlmService(HttpClient httpClient, IConfiguration configuration) : I
         });
 
         return ollamaResponse?.Response ?? string.Empty;
-    }
-
-    public async Task CreateConversation(ConversationId conversationId, string context, CancellationToken cancellationToken)
-    {
-        var askEndpoint = _llmEndpoint + "/ask";
-
-        var prompt = LlmPromptTemplates.CreateConversationPrompt(conversationId, context);
-
-        var payload = new
-        {
-            question = prompt
-        };
-
-        var json = JsonSerializer.Serialize(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        var response = await httpClient.PostAsync(askEndpoint, content, cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var error = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new HttpRequestException($"LLM API init failed: {response.StatusCode} - {error}");
-        }
     }
 }

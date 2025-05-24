@@ -2,7 +2,6 @@
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services.LLM;
-using Application.Conversations.Exceptions;
 using Application.Messages.Exceptions;
 using Domain.Conversations;
 using Domain.Messages;

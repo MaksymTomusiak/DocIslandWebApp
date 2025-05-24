@@ -42,11 +42,8 @@ public static class ConfigureServices
         // Register BlobServiceClient with connection string
         services.AddScoped(_ => new BlobServiceClient(connectionString));
     
-        // Register AzureFileStorageService and optionally pass containerName
-        services.AddScoped<AzureFileStorageService>();
-    
         // Register IFileStorageService
-        services.AddScoped<IFileStorageService>(provider => provider.GetRequiredService<AzureFileStorageService>());
+        services.AddScoped<IFileStorageService, AzureFileStorageService>();
 
         services.AddScoped<IFileTextExtractor, TxtFileTextExtractor>();
         services.AddScoped<IFileTextExtractor, DocxFileTextExtractor>();

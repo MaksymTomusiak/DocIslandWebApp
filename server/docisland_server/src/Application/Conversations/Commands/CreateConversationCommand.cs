@@ -25,7 +25,6 @@ public class CreateConversationCommandHandler(
     IFileRepository fileRepository,
     UserManager<User> userManager,
     IFileStorageService fileStorageService,
-    IEnumerable<IFileTextExtractor> extractors,
     ILlmService llmService) : IRequestHandler<CreateConversationCommand, Either<ConversationException, Conversation>>
 {
     public async Task<Either<ConversationException, Conversation>> Handle(CreateConversationCommand request, CancellationToken cancellationToken)
@@ -49,14 +48,6 @@ public class CreateConversationCommandHandler(
     {
         try
         {
-            var extractor = extractors.FirstOrDefault(e => e.CanHandle(file.ContentType));
-            if (extractor == null)
-            {
-                return new ConversationUnsupportedFileTypeException(file.ContentType);
-            }
-
-            var extractedText = await extractor.ExtractTextAsync(file, cancellationToken);
-            
             var fileEntity = File.New(file.FileName, (uint)file.Length, sessionUserId);
             const string conversationsFiles = "conversations-files";
             try
@@ -69,15 +60,6 @@ public class CreateConversationCommandHandler(
                 return new ConversationFileSavingException(ex);
             }
             var conversation = Conversation.New(sessionUserId, fileEntity.Id);
-            
-            try 
-            {
-                await llmService.CreateConversation(conversation.Id, extractedText, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                return new ConversationLlmException(ex);
-            }
 
             await fileRepository.Add(fileEntity, cancellationToken);
             

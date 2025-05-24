@@ -66,9 +66,6 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
             llmServiceMock
                 .Setup(x => x.AskQuestionAsync(It.IsAny<ConversationId>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("Mocked LLM response");
-            llmServiceMock
-                .Setup(x => x.CreateConversation(It.IsAny<ConversationId>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
             services.AddScoped(_ => llmServiceMock.Object);
         });
 

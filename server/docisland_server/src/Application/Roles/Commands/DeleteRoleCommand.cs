@@ -1,21 +1,14 @@
-﻿using System.Security.Claims;
-using Application.Roles.Exceptions;
-using Application.Users.Exceptions;
+﻿using Application.Roles.Exceptions;
 using Domain.Roles;
-using Domain.Users;
 using LanguageExt;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using UserIdNotFoundException = Application.Roles.Exceptions.UserIdNotFoundException;
-using UserNotFoundException = Application.Roles.Exceptions.UserNotFoundException;
-using UserUnauthorizedAccessException = Application.Roles.Exceptions.UserUnauthorizedAccessException;
 
 namespace Application.Roles.Commands;
 
 public record DeleteRoleCommand: IRequest<Either<RoleException, string>>
 {
-    public required Guid RoleId { get; init; }
+    public required string RoleId { get; init; }
 }
 
 public class DeleteRoleCommandHandler(
@@ -24,7 +17,7 @@ public class DeleteRoleCommandHandler(
     public async Task<Either<RoleException, string>> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
         
-        var roleToDelete = await roleManager.FindByIdAsync(request.RoleId.ToString());
+        var roleToDelete = await roleManager.FindByIdAsync(request.RoleId);
         if (roleToDelete == null)
         {
             return new RoleNotFoundException(request.RoleId);

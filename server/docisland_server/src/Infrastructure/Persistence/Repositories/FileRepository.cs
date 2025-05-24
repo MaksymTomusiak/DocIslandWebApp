@@ -18,7 +18,7 @@ public class FileRepository(ApplicationDbContext context) : IFileQueries, IFileR
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<File>> GetByUser(Guid userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<File>> GetByUser(string userId, CancellationToken cancellationToken)
     {
         return await context.Files
             .AsNoTracking()

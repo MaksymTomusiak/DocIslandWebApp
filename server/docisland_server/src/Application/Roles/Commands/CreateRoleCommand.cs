@@ -24,11 +24,11 @@ public class CreateRoleCommandHandler(
             return new RoleNameAlreadyExistsException(role.Id, request.Name);
         }
 
-        var newRole = new Role(request.Name, request.Description);
+        var newRole = new Role(Guid.NewGuid().ToString(), request.Name, request.Description);
         var result = await roleManager.CreateAsync(newRole);
         if (!result.Succeeded)
         {
-            return new RoleUnknownException(Guid.NewGuid(), new Exception("Could not create role!"));
+            return new RoleUnknownException(String.Empty, new Exception("Could not create role!"));
         }
         return newRole;
     }

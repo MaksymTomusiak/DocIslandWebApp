@@ -8,14 +8,14 @@ namespace Domain.Conversations;
 public class Conversation
 {
     public ConversationId Id { get; private set; }
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
     public User? User { get; private set; }
     public FileId FileId { get; private set; }
     public File? File { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public ICollection<Message> Messages = new List<Message>();
     
-    private Conversation(ConversationId id, Guid userId, FileId fileId, DateTime createdAt) 
+    private Conversation(ConversationId id, string userId, FileId fileId, DateTime createdAt) 
     {
         Id = id;
         UserId = userId;
@@ -23,6 +23,6 @@ public class Conversation
         CreatedAt = createdAt;
     }
 
-    public static Conversation New(Guid userId, FileId fileId) =>
+    public static Conversation New(string userId, FileId fileId) =>
         new Conversation(ConversationId.New(), userId, fileId, DateTime.UtcNow);
 }

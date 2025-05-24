@@ -16,7 +16,7 @@ public class ConversationRepository(ApplicationDbContext context) : IConversatio
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Conversation>> GetByUser(Guid userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Conversation>> GetByUser(string userId, CancellationToken cancellationToken)
     {
         return await context.Conversations
             .AsNoTracking()

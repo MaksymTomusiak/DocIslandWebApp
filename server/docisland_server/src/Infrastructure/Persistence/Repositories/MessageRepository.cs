@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Domain.Conversations;
 using Domain.Messages;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,16 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         return await context.Messages
             .AsNoTracking()
             .Include(x => x.Conversation)
+            .ToListAsync(cancellationToken);
+    }
+    
+    public async Task<IReadOnlyList<Message>> GetByConversationId(ConversationId conversationId, CancellationToken cancellationToken)
+    {
+        return await context.Messages
+            .AsNoTracking()
+            .Where(x => x.ConversationId == conversationId)
+            .Include(x => x.Conversation)
+            .OrderBy(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
     }
     

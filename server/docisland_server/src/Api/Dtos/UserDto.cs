@@ -3,7 +3,7 @@ using Domain.Users;
 namespace Api.Dtos;
 
 public record UserDto(
-    Guid Id,
+    string Id,
     string UserName,
     string Email,
     IList<string>? Roles)

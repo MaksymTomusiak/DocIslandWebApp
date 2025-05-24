@@ -4,7 +4,7 @@ using File = Domain.Files.File;
 
 namespace Domain.Users;
 
-public class User : IdentityUser<Guid>
+public class User : IdentityUser<string>
 {
     public string? EmailVerificationToken { get; set; }
     public DateTime? EmailVerificationTokenExpiration { get; set; }

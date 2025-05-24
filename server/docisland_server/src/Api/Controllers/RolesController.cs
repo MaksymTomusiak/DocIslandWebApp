@@ -40,7 +40,7 @@ public class RolesController(RoleManager<Role> roleManager, ISender sender): Con
     }
     
     [HttpDelete("delete/{roleId:guid}")]
-    public async Task<ActionResult> Delete([FromRoute] Guid roleId, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> Delete([FromRoute] string roleId, CancellationToken cancellationToken = default)
     {
         var command = new DeleteRoleCommand()
         {

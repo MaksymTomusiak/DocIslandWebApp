@@ -1,11 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
-using Application.Common.Interfaces.Services.Jwt;
 using Domain.Roles;
 using Domain.Users;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Tests.Common.TokenValidator;
 using Tests.Data;
 using Xunit;
 
@@ -17,24 +22,20 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebFact
     protected readonly HttpClient Client;
     protected readonly UserManager<User> UserManager;
     protected readonly RoleManager<Role> RoleManager;
-    protected readonly IJwtProvider JwtProvider;
-    private readonly User _adminUser = UsersData.NewUser(
-        "testAdmin@gmail.com", 
-        "testAdmin", 
-        "testPasswordHash");
+    private readonly User _adminUser = UsersData.AdminUser();
     private readonly Role _adminRole = RolesData.AdminRole;
 
     protected BaseIntegrationTest(IntegrationTestWebFactory factory)
     {
         var scope = factory.Services.CreateScope();
         Context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        JwtProvider = scope.ServiceProvider.GetRequiredService<IJwtProvider>();
-
-        Client = factory.WithWebHostBuilder(_ => { })
+        
+        Client = factory.WithWebHostBuilder(builder => {})
             .CreateClient(new WebApplicationFactoryClientOptions
             {
-                AllowAutoRedirect = false,
+                AllowAutoRedirect = false
             });
+        
         UserManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         
@@ -45,9 +46,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebFact
     private async Task SetAdminAuthorizationHeaderAsync()
     {
         await SaveAdminAsync();
-        SetCustomAuthorizationHeader(JwtProvider.Generate(_adminUser, _adminRole));
+        var token = TestsExtensions.GenerateMockJwt(UsersData.AdminUser().Id);
+        SetCustomAuthorizationHeader(token);
     }
-
+    
     private async Task SaveAdminAsync()
     {
         if (await RoleManager.FindByNameAsync(_adminRole.Name!) == null)
@@ -77,8 +79,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebFact
 
     protected void SetCustomAuthorizationHeader(string token)
     {
-        Client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
     protected async Task<int> SaveChangesAsync()

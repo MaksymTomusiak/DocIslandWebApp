@@ -2,6 +2,7 @@
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Messages.Commands;
+using Domain.Conversations;
 using Domain.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,18 +11,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("messages")]
+[Authorize(AuthenticationSchemes = "Clerk")]
 public class MessagesController(ISender sender, IMessageQueries messageQueries) : ControllerBase
 {
-    [Authorize]
-    [HttpGet]
-    public async Task<IEnumerable<MessageDto>> GetAll(CancellationToken cancellationToken)
+    [HttpGet("conversation/{conversationId:guid}")]
+    public async Task<IEnumerable<MessageDto>> GetAll(Guid conversationId, CancellationToken cancellationToken)
     {
-        var entities = await messageQueries.GetAll(cancellationToken);
+        var entities = await messageQueries.GetByConversationId(new ConversationId(conversationId), cancellationToken);
         
         return entities.Select(MessageDto.FromDomainModel);
     }
     
-    [Authorize]
     [HttpGet("{messageId:guid}")]
     public async Task<ActionResult<MessageDto>> GetById(Guid messageId, CancellationToken cancellationToken)
     {
@@ -31,7 +31,6 @@ public class MessagesController(ISender sender, IMessageQueries messageQueries) 
             () => NotFound());
     }
     
-    [Authorize]
     [HttpPost("add")]
     public async Task<ActionResult<MessageDto>> Create([FromBody] MessageCreateDto messageCreateDto, CancellationToken cancellationToken)
     {
@@ -46,7 +45,6 @@ public class MessagesController(ISender sender, IMessageQueries messageQueries) 
             e => e.ToObjectResult());
     }
     
-    [Authorize]
     [HttpDelete("delete/{messageId:guid}")]
     public async Task<ActionResult<MessageDto>> Delete(Guid messageId, CancellationToken cancellationToken)
     {

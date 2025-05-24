@@ -37,7 +37,7 @@ public class CreateMessageCommandHandler(
                     return new MessageUserIdNotFoundException(Guid.Empty);
                 }
                 
-                if (conversation.UserId != Guid.Parse(sessionUserId))
+                if (conversation.UserId != sessionUserId)
                 {
                     return new MessageUserWrongException();
                 }

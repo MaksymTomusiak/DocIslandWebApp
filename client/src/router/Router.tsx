@@ -4,7 +4,8 @@ import Layout from '../components/layout/Layout';
 import NotFoundPage from '../components/common/NotFoundPage';
 import HomePage from '../features/homePage/HomePage';
 import SignInPage from '../features/auth/sign-in/SignInPage';
-import AiChatPage from '../features/ai-chat/AiChatPage';
+import SignUpPage from '../features/auth/sign-up/SignUpPage';
+import AiChatPage from '../features/ai-chat/ai-chat/AiChatPage';
 import ChatSelectionPage from '../features/chat-selection/ChatSelectionPage';
 import ClerkProtectedRoute from './ClerkProtectedRoute';
 
@@ -20,10 +21,18 @@ const Router = () => {
             <BrowserRouter>
                 <Routes>
                     <Route
-                        path="/login/*"
+                        path="/login"
                         element={
                             <SignedOut>
                                 <SignInPage />
+                            </SignedOut>
+                        }
+                    />
+                    <Route
+                        path="/sign-up"
+                        element={
+                            <SignedOut>
+                                <SignUpPage />
                             </SignedOut>
                         }
                     />

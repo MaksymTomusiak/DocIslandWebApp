@@ -1,21 +1,39 @@
-import { useUser, useClerk } from '@clerk/clerk-react';
+import { useUser } from '@clerk/clerk-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { CustomUserButton } from '../../auth/CustomClerkComponents';
 import './header.css';
 
 const Header = () => {
-    const { user, isSignedIn } = useUser();
-    const { signOut } = useClerk();
+    const { isSignedIn } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
+    const [showShadow, setShowShadow] = useState(false);
 
-    const handleAuthClick = async () => {
-        if (isSignedIn) {
-            try {
-                await signOut();
-            } catch (error) {
-                console.error('Error signing out:', error);
+    useEffect(() => {
+        const handleScroll = () => {
+            if (location.pathname === '/select-chat') {
+                setShowShadow(false);
+                return;
             }
-        } else {
+
+            if (location.pathname !== '/') {
+                setShowShadow(true);
+                return;
+            }
+            // On home page, show shadow only when scrolled
+            setShowShadow(window.scrollY > 0);
+        };
+
+        // Initial check
+        handleScroll();
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [location.pathname]);
+
+    const handleAuthClick = () => {
+        if (!isSignedIn) {
             navigate('/login');
         }
     };
@@ -39,23 +57,18 @@ const Header = () => {
     };
 
     return (
-        <div className="header">
-            <div className="logo" onClick={() => handleNavigation('/')}>
+        <header className={`header ${showShadow ? 'shadow' : ''}`}>
+            <div className="logo" onClick={() => handleNavigation('#hero')}>
                 <img src="./header/logo.svg" alt="Logo" />
             </div>
             <div className="header_menu">
-                <p onClick={() => handleNavigation('/')}>Home</p>
+                <p onClick={() => handleNavigation('#hero')}>Home</p>
                 <p onClick={() => handleNavigation('#about')}>About</p>
                 <p onClick={() => handleNavigation('#resources')}>Resources</p>
             </div>
             {isSignedIn ? (
-                <div className="user_menu" onClick={handleAuthClick}>
-                    <img
-                        src={user?.imageUrl}
-                        alt="User avatar"
-                        className="user_avatar"
-                    />
-                    <span>{user?.firstName || user?.username}</span>
+                <div className="user_menu">
+                    <CustomUserButton />
                 </div>
             ) : (
                 <div className="login_button" onClick={handleAuthClick}>
@@ -63,7 +76,7 @@ const Header = () => {
                     <img src="./header/arrowRightBlack.svg" alt="Arrow" />
                 </div>
             )}
-        </div>
+        </header>
     );
 };
 

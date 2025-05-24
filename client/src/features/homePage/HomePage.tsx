@@ -30,7 +30,7 @@ const HomePage = () => {
     return (
         <>
             <div className="home-page-container">
-                <div className="hero">
+                <div id="hero" className="hero">
                     <div className="hero-content">
                         <div className="hero-title-and-text-container">
                             <div className="hero-title">Doc Island</div>

@@ -1,0 +1,280 @@
+.custom-clerk-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 20px;
+}
+
+.custom-clerk-root {
+    width: 100%;
+    max-width: 480px;
+}
+
+.custom-clerk-card {
+    background-color: white !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    padding: 32px !important;
+}
+
+.custom-clerk-header-title {
+    font-family: 'main-regular' !important;
+    color: #333 !important;
+    font-size: 24px !important;
+    margin-bottom: 8px !important;
+}
+
+.custom-clerk-header-subtitle {
+    font-family: 'secondary-regular' !important;
+    color: #666 !important;
+    font-size: 16px !important;
+}
+
+.custom-clerk-social-button {
+    border: 1px solid #e6f4f1 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: 'secondary-medium' !important;
+    transition: all 0.2s ease !important;
+}
+
+.custom-clerk-social-button:hover {
+    background-color: #f9fafb !important;
+}
+
+.custom-clerk-primary-button {
+    background-color: #59abb2 !important;
+    color: white !important;
+    font-family: 'secondary-medium' !important;
+    padding: 12px 24px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.custom-clerk-primary-button:hover {
+    background-color: #4a8f94 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom-clerk-input {
+    border: 2px solid #e6f4f1 !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
+    font-family: 'secondary-regular' !important;
+    font-size: 15px !important;
+    color: #333 !important;
+    transition: all 0.2s ease !important;
+}
+
+.custom-clerk-input:focus {
+    border-color: #59abb2 !important;
+    box-shadow: 0 0 0 3px rgba(89, 171, 178, 0.1) !important;
+    outline: none !important;
+}
+
+.custom-clerk-label {
+    font-family: 'secondary-medium' !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    margin-bottom: 6px !important;
+}
+
+.custom-clerk-footer-link {
+    color: #59abb2 !important;
+    font-family: 'secondary-medium' !important;
+    font-size: 14px !important;
+    transition: color 0.2s ease !important;
+}
+
+.custom-clerk-footer-link:hover {
+    color: #4a8f94 !important;
+}
+
+.custom-clerk-alert {
+    background-color: #fff5f5 !important;
+    border: 1px solid #feb2b2 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+}
+
+.custom-clerk-alert-text {
+    color: #dc3545 !important;
+    font-family: 'secondary-regular' !important;
+    font-size: 14px !important;
+}
+
+.custom-clerk-warning-text {
+    color: #dc3545 !important;
+    font-family: 'secondary-regular' !important;
+    font-size: 12px !important;
+}
+
+.custom-clerk-otp-input {
+    border: 2px solid #e6f4f1 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: 'secondary-medium' !important;
+    font-size: 18px !important;
+    text-align: center !important;
+    letter-spacing: 4px !important;
+}
+
+.custom-clerk-user-preview {
+    background-color: #f9fafb !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+}
+
+.custom-clerk-popover-card {
+    background-color: white !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    padding: 8px !important;
+}
+
+.custom-clerk-popover-button {
+    padding: 12px 16px !important;
+    font-family: 'secondary-medium' !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    transition: all 0.2s ease !important;
+}
+
+.custom-clerk-popover-button:hover {
+    background-color: #f9fafb !important;
+}
+
+.custom-clerk-popover-footer {
+    border-top: 1px solid #e6f4f1 !important;
+    padding: 12px 16px !important;
+}
+
+.custom-clerk-popover-icon {
+    color: #666 !important;
+}
+
+.custom-clerk-popover-text {
+    color: #333 !important;
+    font-family: 'secondary-medium' !important;
+}
+
+/* User Profile Page Styles */
+.cl-profilePage {
+    background-color: white !important;
+    border-radius: 10px !important;
+    padding: 32px !important;
+}
+
+.cl-profileSection {
+    border-bottom: 1px solid #e6f4f1 !important;
+    padding: 24px 0 !important;
+}
+
+.cl-profileSectionTitle {
+    font-family: 'secondary-regular' !important;
+    color: #333 !important;
+    font-size: 28px !important;
+    margin-bottom: 16px !important;
+}
+
+.cl-profileSectionContent {
+    font-family: 'secondary-regular' !important;
+    color: #666 !important;
+    font-size: 14px !important;
+}
+
+.cl-profileSectionButton {
+    background-color: #59abb2 !important;
+    color: white !important;
+    font-family: 'secondary-medium' !important;
+    padding: 12px 24px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.cl-profileSectionButton:hover {
+    background-color: #4a8f94 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.cl-profileSectionInput {
+    border: 2px solid #e6f4f1 !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
+    font-family: 'secondary-regular' !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    transition: all 0.2s ease !important;
+}
+
+.cl-profileSectionInput:focus {
+    border-color: #59abb2 !important;
+    box-shadow: 0 0 0 3px rgba(89, 171, 178, 0.1) !important;
+    outline: none !important;
+}
+
+.cl-profileSectionLabel {
+    font-family: 'secondary-medium' !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+}
+
+.cl-profileSectionLink {
+    color: #59abb2 !important;
+    font-family: 'secondary-medium' !important;
+    font-size: 14px !important;
+    transition: color 0.2s ease !important;
+}
+
+.cl-profileSectionLink:hover {
+    color: #4a8f94 !important;
+}
+
+.cl-profileSectionAlert {
+    background-color: #fff5f5 !important;
+    border: 1px solid #feb2b2 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    margin: 16px 0 !important;
+}
+
+.cl-profileSectionAlertText {
+    color: #dc3545 !important;
+    font-family: 'secondary-regular' !important;
+    font-size: 14px !important;
+}
+
+.cl-menuItem.cl-button {
+    font-family: 'secondary-medium' !important;
+}
+
+.cl-headerTitle {
+    font-family: 'main-regular' !important;
+}
+
+.cl-navbar h1 {
+    font-family: 'main-regular' !important;
+}
+
+.cl-navbar p {
+    font-family: 'secondary-medium' !important;
+}
+
+.cl-navbarButtonText {
+    font-family: 'secondary-medium' !important;
+}
+
+.cl-dividerText {
+    font-family: 'secondary-regular' !important;
+}
+
+.cl-footerActionText {
+    font-family: 'secondary-regular' !important;
+}

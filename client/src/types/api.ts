@@ -13,6 +13,7 @@ export interface MessageCreateDto {
 
 export interface ConversationDto {
     id: string;
+    fileName: string;
     createdAt: string;
     updatedAt: string;
 }

@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useConversation } from '../conversations/hooks/useConversation';
-import './chat-selection.css';
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
 
@@ -58,18 +57,14 @@ const ChatSelectionPage = () => {
                 const conversation = await createConversation(selectedFile);
                 navigate(`/chat/${conversation.id}`);
             } catch (err) {
-                // Error is handled by the hook
                 console.error('Failed to create conversation:', err);
             }
         }
     }, [selectedFile, createConversation, navigate]);
 
-    const handleContinueChat = useCallback(
-        (chatId: string) => {
-            navigate(`/chat/${chatId}`);
-        },
-        [navigate]
-    );
+    const handleContinueChat = (chatId: string) => {
+        navigate(`/chat/${chatId}`);
+    };
 
     return (
         <div className="chat-selection-container">
@@ -147,7 +142,7 @@ const ChatSelectionPage = () => {
                                     onClick={() => handleContinueChat(chat.id)}
                                 >
                                     <div className="chat-history-content">
-                                        <h3>Chat {chat.id}</h3>
+                                        <h3>{chat.fileName}</h3>
                                         <p>
                                             Created:{' '}
                                             {new Date(

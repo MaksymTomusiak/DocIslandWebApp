@@ -1,3 +1,29 @@
+/* Global scrollbar styles for the main page */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #59abb2 #e6f4f1;
+}
+
+/* For Webkit browsers (Chrome, Safari, etc.) */
+html::-webkit-scrollbar {
+    width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+    background: #e6f4f1;
+    border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: #59abb2;
+    border-radius: 4px;
+    border: 2px solid #e6f4f1;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background-color: #4a8f94;
+}
+
 .home-page-container {
     background-color: #f9fafb;
     display: flex;

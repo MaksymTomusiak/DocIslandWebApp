@@ -1,9 +1,5 @@
-import { SignIn } from '@clerk/react-router';
-import './sign-in.css';
+import { CustomSignIn } from '../../../components/auth/CustomClerkComponents';
+
 export default function SignInPage() {
-    return (
-        <div className="sign-in-container">
-            <SignIn />
-        </div>
-    );
+    return <CustomSignIn />;
 }

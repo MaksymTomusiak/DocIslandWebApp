@@ -28,6 +28,21 @@ export const useConversation = (baseURL: string) => {
         }
     }, [conversationApi]);
 
+    const getConversationById = useCallback(async (id: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const conversation = await conversationApi.getConversation(id);
+            return conversation;
+        }
+        catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to create conversation');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }, [conversationApi]);
+
     const createConversation = useCallback(async (file: File) => {
         try {
             setLoading(true);
@@ -63,6 +78,7 @@ export const useConversation = (baseURL: string) => {
         error,
         loadConversations,
         createConversation,
-        deleteConversation
+        deleteConversation,
+        getConversationById
     };
 };

@@ -11,7 +11,9 @@ const Layout = () => {
             }}
         >
             <Header />
-            <Outlet />
+            <main style={{ flex: 1, marginTop: '80px' }}>
+                <Outlet />
+            </main>
         </div>
     );
 };

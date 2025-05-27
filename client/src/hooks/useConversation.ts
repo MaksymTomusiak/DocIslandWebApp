@@ -1,14 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
-import { useAuth } from '@clerk/clerk-react';
 import { ConversationApi } from '../services/conversationApi';
 import { ConversationDto } from '../types/api';
+import { useAuthToken } from './useAuthToken';
 
 export const useConversation = (baseURL: string) => {
-    const { getToken } = useAuth();
-    const getTokenWithTemplate = useCallback(
-        () => getToken({ template: process.env.VITE_CLERK_JWT_TEMPLATE || '' }),
-        [getToken]
-    );
+    const { token, isLoading: isTokenLoading } = useAuthToken();
     const [conversations, setConversations] = useState<ConversationDto[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,12 +14,14 @@ export const useConversation = (baseURL: string) => {
             new ConversationApi(
                 baseURL,
                 new AbortController().signal,
-                getTokenWithTemplate
+                () => Promise.resolve(token)
             ),
-        [baseURL, getTokenWithTemplate]
+        [baseURL, token]
     );
 
     const loadConversations = useCallback(async () => {
+        if (!token) return;
+
         try {
             setLoading(true);
             setError(null);
@@ -38,7 +36,7 @@ export const useConversation = (baseURL: string) => {
         } finally {
             setLoading(false);
         }
-    }, [conversationApi]);
+    }, [conversationApi, token]);
 
     const getConversationById = useCallback(
         async (id: string) => {
@@ -109,7 +107,7 @@ export const useConversation = (baseURL: string) => {
 
     return {
         conversations,
-        loading,
+        loading: loading || isTokenLoading,
         error,
         loadConversations,
         createConversation,

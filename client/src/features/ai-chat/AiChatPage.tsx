@@ -1,19 +1,21 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useMessages } from '../../../hooks/useMessages';
-import Spinner from '../../../components/common/Spinner';
-import ConversationsSidebar from '../conversations-sidebar/ConversationsSidebar';
-import { useConversation } from '../../../hooks/useConversation';
+import { useMessages } from '../../hooks/useMessages';
+import Spinner from '../../components/common/spinner/Spinner';
+import ConversationsSidebar from '../ai-chat/conversations-sidebar/ConversationsSidebar';
+import { useConversation } from '../../hooks/useConversation';
+import { useAuthToken } from '../../hooks/useAuthToken';
 import './ai-chat.css';
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const AiChatPage = () => {
     const [message, setMessage] = useState('');
     const { conversationId } = useParams<{ conversationId: string }>();
     const navigate = useNavigate();
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { token, isLoading: isTokenLoading } = useAuthToken();
 
     const {
         conversations,
@@ -33,6 +35,8 @@ const AiChatPage = () => {
     // Initial load and validation
     useEffect(() => {
         const initializeChat = async () => {
+            if (!token) return;
+
             // Load conversations first
             await loadConversations();
 
@@ -64,13 +68,17 @@ const AiChatPage = () => {
             }
         };
 
-        initializeChat();
+        if (!isTokenLoading) {
+            initializeChat();
+        }
     }, [
         conversationId,
         loadConversations,
         getConversationById,
         loadMessages,
         navigate,
+        token,
+        isTokenLoading,
     ]);
 
     // Handle message loading errors
@@ -86,7 +94,7 @@ const AiChatPage = () => {
     }, [messages]);
 
     const handleSendMessage = useCallback(async () => {
-        if (!message.trim() || !conversationId) return;
+        if (!message.trim() || !conversationId || !token) return;
 
         try {
             await sendMessage(message.trim());
@@ -94,7 +102,7 @@ const AiChatPage = () => {
         } catch (err) {
             console.error('Failed to send message:', err);
         }
-    }, [message, conversationId, sendMessage]);
+    }, [message, conversationId, sendMessage, token]);
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -108,6 +116,8 @@ const AiChatPage = () => {
     };
 
     const handleDeleteConversation = async (id: string) => {
+        if (!token) return;
+
         try {
             await deleteConversation(id);
         } catch (err) {
@@ -120,6 +130,10 @@ const AiChatPage = () => {
 
     if (!conversationId) {
         return <div className="error">No conversation selected</div>;
+    }
+
+    if (isTokenLoading) {
+        return <Spinner />;
     }
 
     const renderMessages = () => {
@@ -173,11 +187,12 @@ const AiChatPage = () => {
                 currentConversationId={conversationId}
             />
             <div className="chat-container">
-                <div className="chat-messages">
-                    {renderMessages()}
-                    <div ref={messagesEndRef} />
+                <div className="messages-wrapper">
+                    <div className="chat-messages">
+                        {renderMessages()}
+                        <div ref={messagesEndRef} />
+                    </div>
                 </div>
-
                 <div className="chat-input">
                     <textarea
                         value={message}
@@ -188,7 +203,7 @@ const AiChatPage = () => {
                     />
                     <button
                         onClick={handleSendMessage}
-                        disabled={!message.trim() || messagesLoading}
+                        disabled={!message.trim() || messagesLoading || !token}
                         className="send-button"
                     >
                         <Icon icon="material-symbols:send" />

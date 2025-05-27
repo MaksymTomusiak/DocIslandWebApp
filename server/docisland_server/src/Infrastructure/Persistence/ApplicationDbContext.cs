@@ -6,6 +6,8 @@ using Domain.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using File = Domain.Files.File;
+using Infrastructure.Persistence.Seeders;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Persistence;
 

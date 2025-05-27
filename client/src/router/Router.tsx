@@ -1,15 +1,21 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ClerkProvider, SignedOut } from '@clerk/clerk-react';
 import Layout from '../components/layout/Layout';
-import NotFoundPage from '../components/common/NotFoundPage';
 import HomePage from '../features/homePage/HomePage';
-import SignInPage from '../features/auth/sign-in/SignInPage';
-import SignUpPage from '../features/auth/sign-up/SignUpPage';
-import AiChatPage from '../features/ai-chat/ai-chat/AiChatPage';
+import AiChatPage from '../features/ai-chat/AiChatPage';
 import ChatSelectionPage from '../features/chat-selection/ChatSelectionPage';
+import NotFoundPage from '../components/common/not-found/NotFoundPage';
+import AdminUsersPage from '../features/admin/AdminUsersPage';
+import BannedPage from '../pages/BannedPage';
 import ClerkProtectedRoute from './ClerkProtectedRoute';
+import AdminProtectedRoute from '../components/auth/AdminProtectedRoute';
+import BanProtectedRoute from '../components/auth/BanProtectedRoute';
+import AdminStatusChecker from '../components/auth/AdminStatusChecker';
+import BanStatusChecker from '../components/auth/BanStatusChecker';
+import SignInPage from '../features/auth/SignInPage';
+import SignUpPage from '../features/auth/SignUpPage';
 
-const clerkKey = process.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!clerkKey) {
     throw new Error('Missing Clerk Publishable Key');
@@ -18,10 +24,12 @@ if (!clerkKey) {
 const Router = () => {
     return (
         <ClerkProvider publishableKey={clerkKey}>
+            <AdminStatusChecker />
+            <BanStatusChecker />
             <BrowserRouter>
                 <Routes>
                     <Route
-                        path="/login"
+                        path="/login/*"
                         element={
                             <SignedOut>
                                 <SignInPage />
@@ -36,26 +44,50 @@ const Router = () => {
                             </SignedOut>
                         }
                     />
-                    <Route path="/" element={<Layout />}>
+                    <Route element={<Layout />}>
                         <Route index element={<HomePage />} />
-                        <Route
-                            path="/select-chat"
-                            element={
-                                <ClerkProtectedRoute>
-                                    <ChatSelectionPage />
-                                </ClerkProtectedRoute>
-                            }
-                        />
                         <Route
                             path="/chat/:conversationId"
                             element={
                                 <ClerkProtectedRoute>
-                                    <AiChatPage />
+                                    <BanProtectedRoute>
+                                        <AiChatPage />
+                                    </BanProtectedRoute>
                                 </ClerkProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/select-chat"
+                            element={
+                                <ClerkProtectedRoute>
+                                    <BanProtectedRoute>
+                                        <ChatSelectionPage />
+                                    </BanProtectedRoute>
+                                </ClerkProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/users"
+                            element={
+                                <ClerkProtectedRoute>
+                                    <AdminProtectedRoute>
+                                        <BanProtectedRoute>
+                                            <AdminUsersPage />
+                                        </BanProtectedRoute>
+                                    </AdminProtectedRoute>
+                                </ClerkProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/banned"
+                            element={
+                                <ClerkProtectedRoute>
+                                    <BannedPage />
+                                </ClerkProtectedRoute>
+                            }
+                        />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
-                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
         </ClerkProvider>

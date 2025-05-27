@@ -2,13 +2,15 @@ import { useUser } from '@clerk/clerk-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { CustomUserButton } from '../../auth/CustomClerkComponents';
+import { useAdmin } from '../../../contexts/AdminContext';
 import './header.css';
 
 const Header = () => {
-    const { isSignedIn, isLoaded } = useUser();
+    const { isSignedIn, isLoaded: isClerkLoaded } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
     const [showShadow, setShowShadow] = useState(false);
+    const { isAdmin } = useAdmin();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -57,7 +59,7 @@ const Header = () => {
     };
 
     // Return a placeholder with the same height during loading
-    if (!isLoaded) {
+    if (!isClerkLoaded) {
         return <div style={{ height: '80px' }} />;
     }
 
@@ -70,6 +72,9 @@ const Header = () => {
                 <p onClick={() => handleNavigation('#hero')}>Home</p>
                 <p onClick={() => handleNavigation('#about')}>About</p>
                 <p onClick={() => handleNavigation('#resources')}>Resources</p>
+                {isSignedIn && isAdmin && (
+                    <p onClick={() => navigate('/admin/users')}>Users</p>
+                )}
             </div>
             {isSignedIn ? (
                 <div className="user_menu">

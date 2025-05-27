@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useConversation } from '../../hooks/useConversation';
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const ChatSelectionPage = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isStartingChat, setIsStartingChat] = useState(false);
     const {
         conversations,
         loading,
@@ -54,10 +55,13 @@ const ChatSelectionPage = () => {
     const handleStartChat = useCallback(async () => {
         if (selectedFile) {
             try {
+                setIsStartingChat(true);
                 const conversation = await createConversation(selectedFile);
                 navigate(`/chat/${conversation.id}`);
             } catch (err) {
                 console.error('Failed to create conversation:', err);
+            } finally {
+                setIsStartingChat(false);
             }
         }
     }, [selectedFile, createConversation, navigate]);
@@ -104,9 +108,11 @@ const ChatSelectionPage = () => {
                                 <button
                                     className="start-chat-button"
                                     onClick={handleStartChat}
-                                    disabled={loading}
+                                    disabled={isStartingChat}
                                 >
-                                    {loading ? 'Creating...' : 'Start Chat'}
+                                    {isStartingChat
+                                        ? 'Creating...'
+                                        : 'Start Chat'}
                                 </button>
                             </div>
                         </>

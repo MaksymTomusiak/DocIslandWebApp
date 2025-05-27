@@ -6,28 +6,13 @@ public record UserDto(
     string Id,
     string UserName,
     string Email,
-    IList<string>? Roles)
+    bool IsAdmin,
+    bool IsBanned)
 {
-    public static UserDto FromDomainModel(User user, IList<string>? roles = null)
+    public static UserDto FromDomainModel(User user, bool isAdmin)
         => new(user.Id,
             user.UserName!, 
             user.Email!, 
-            roles ?? []);
-
+            isAdmin,
+            user.IsBanned);
 }
-
-public record UserLoginDto(
-    string Email,
-    string Password);
-    
-public record UserRegisterDto(
-    string UserName,
-    string Email,
-    string Password);
-    
-public record UserUpdatePasswordDto(
-    string OldPassword,
-    string NewPassword);
-    
-public record UserUpdateUserNameDto(
-    string UserName);

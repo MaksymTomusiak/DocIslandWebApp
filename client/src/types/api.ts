@@ -22,6 +22,14 @@ export interface ConversationCreateDto {
     file: File;
 }
 
+export interface UserDto {
+    id: string;
+    email: string;
+    username: string;
+    isAdmin: boolean;
+    isBanned: boolean;
+}
+
 export interface ApiError {
     message: string;
     statusCode: number;

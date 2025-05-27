@@ -5,7 +5,7 @@ import {
     useUser,
 } from '@clerk/clerk-react';
 import { ReactNode } from 'react';
-import Spinner from '../components/common/Spinner';
+import Spinner from '../components/common/spinner/Spinner';
 
 interface ClerkProtectedRouteProps {
     children: ReactNode;

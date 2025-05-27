@@ -56,5 +56,7 @@ public static class ConfigurePersistence
 
         services.AddScoped<IFileQueries, FileRepository>();
         services.AddScoped<IFileRepository, FileRepository>();
+        
+        services.AddScoped<IUserQueries, UserRepository>();
     }
 }

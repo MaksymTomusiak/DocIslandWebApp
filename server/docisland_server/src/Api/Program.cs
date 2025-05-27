@@ -1,8 +1,10 @@
+using Api.Authorization;
 using Api.Middleware;
 using Api.Modules;
 using Application;
 using Infrastructure;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.SetupServices();
+builder.Services.AddMemoryCache();
 
 // Add services to the container
 builder.Services.AddEndpointsApiExplorer();
@@ -47,6 +50,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+
+// Add authorization services
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.Requirements.Add(new AdminRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, AdminAuthorizationHandler>();
 
 var app = builder.Build();
 

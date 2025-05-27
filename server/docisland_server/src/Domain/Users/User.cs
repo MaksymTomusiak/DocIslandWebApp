@@ -10,4 +10,5 @@ public class User : IdentityUser<string>
     public DateTime? EmailVerificationTokenExpiration { get; set; }
     public ICollection<File> Files { get; set; } = new List<File>();
     public ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
+    public bool IsBanned { get; set; } = false;
 }

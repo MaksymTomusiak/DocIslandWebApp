@@ -8,6 +8,8 @@ public class UserConfigurator : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.Property(x => x.IsBanned).HasDefaultValue(false);
+        
         builder.HasMany(x => x.Files)
             .WithOne(x => x.User)
             .HasForeignKey(x => x.UserId);

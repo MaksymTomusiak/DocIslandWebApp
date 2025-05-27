@@ -1,18 +1,14 @@
 import { useState, useCallback, useMemo } from 'react';
-import { useAuth } from '@clerk/clerk-react';
 import { MessageApi } from '../services/messageApi';
 import { MessageDto, MessageCreateDto } from '../types/api';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { useAuthToken } from './useAuthToken';
 
 dayjs.extend(utc);
 
 export const useMessages = (baseURL: string, conversationId: string) => {
-    const { getToken } = useAuth();
-    const getTokenWithTemplate = useCallback(
-        () => getToken({ template: process.env.VITE_CLERK_JWT_TEMPLATE || '' }),
-        [getToken]
-    );
+    const { token, isLoading: isTokenLoading } = useAuthToken();
     const [messages, setMessages] = useState<MessageDto[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -22,12 +18,14 @@ export const useMessages = (baseURL: string, conversationId: string) => {
             new MessageApi(
                 baseURL,
                 new AbortController().signal,
-                getTokenWithTemplate
+                () => Promise.resolve(token)
             ),
-        [baseURL, getTokenWithTemplate]
+        [baseURL, token]
     );
 
     const loadMessages = useCallback(async () => {
+        if (!token) return;
+
         try {
             setLoading(true);
             setError(null);
@@ -42,7 +40,7 @@ export const useMessages = (baseURL: string, conversationId: string) => {
         } finally {
             setLoading(false);
         }
-    }, [messageApi, conversationId]);
+    }, [messageApi, conversationId, token]);
 
     const sendMessage = useCallback(
         async (content: string) => {
@@ -106,7 +104,7 @@ export const useMessages = (baseURL: string, conversationId: string) => {
 
     return {
         messages,
-        loading,
+        loading: loading || isTokenLoading,
         error,
         loadMessages,
         sendMessage,

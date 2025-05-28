@@ -6,7 +6,8 @@ import { useAuthToken } from './useAuthToken';
 export const useConversation = (baseURL: string) => {
     const { token, isLoading: isTokenLoading } = useAuthToken();
     const [conversations, setConversations] = useState<ConversationDto[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [isLoadingConversations, setIsLoadingConversations] = useState(false);
+    const [isCreatingChat, setIsCreatingChat] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const conversationApi = useMemo(
@@ -19,12 +20,33 @@ export const useConversation = (baseURL: string) => {
         [baseURL, token]
     );
 
+    const loadRecentConversations = useCallback(async () => {
+        if (!token) return;
+
+        try {
+            setIsLoadingConversations(true);
+            setError(null);
+            await new Promise(resolve => setTimeout(resolve, 700));
+            const data = await conversationApi.getRecentConversationsByUserId()
+            setConversations(data);
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to load conversations'
+            );
+        } finally {
+            setIsLoadingConversations(false);
+        }
+    }, [conversationApi, token])
+
     const loadConversations = useCallback(async () => {
         if (!token) return;
 
         try {
-            setLoading(true);
+            setIsLoadingConversations(true);
             setError(null);
+            await new Promise(resolve => setTimeout(resolve, 700));
             const data = await conversationApi.getConversationsByUserId();
             setConversations(data);
         } catch (err) {
@@ -34,14 +56,14 @@ export const useConversation = (baseURL: string) => {
                     : 'Failed to load conversations'
             );
         } finally {
-            setLoading(false);
+            setIsLoadingConversations(false);
         }
     }, [conversationApi, token]);
 
     const getConversationById = useCallback(
         async (id: string) => {
             try {
-                setLoading(true);
+                setIsLoadingConversations(true);
                 setError(null);
                 const conversation = await conversationApi.getConversation(id);
                 return conversation;
@@ -53,7 +75,7 @@ export const useConversation = (baseURL: string) => {
                 );
                 throw err;
             } finally {
-                setLoading(false);
+                setIsLoadingConversations(false);
             }
         },
         [conversationApi]
@@ -62,7 +84,7 @@ export const useConversation = (baseURL: string) => {
     const createConversation = useCallback(
         async (file: File) => {
             try {
-                setLoading(true);
+                setIsCreatingChat(true);
                 setError(null);
                 const newConversation =
                     await conversationApi.createConversation({ file });
@@ -76,7 +98,7 @@ export const useConversation = (baseURL: string) => {
                 );
                 throw err;
             } finally {
-                setLoading(false);
+                setIsCreatingChat(false);
             }
         },
         [conversationApi]
@@ -85,7 +107,7 @@ export const useConversation = (baseURL: string) => {
     const deleteConversation = useCallback(
         async (id: string) => {
             try {
-                setLoading(true);
+                setIsLoadingConversations(true);
                 setError(null);
                 await conversationApi.deleteConversation(id);
                 setConversations((prev) =>
@@ -99,7 +121,7 @@ export const useConversation = (baseURL: string) => {
                 );
                 throw err;
             } finally {
-                setLoading(false);
+                setIsLoadingConversations(false);
             }
         },
         [conversationApi]
@@ -107,8 +129,10 @@ export const useConversation = (baseURL: string) => {
 
     return {
         conversations,
-        loading: loading || isTokenLoading,
+        loading: isLoadingConversations || isTokenLoading,
+        isCreatingChat,
         error,
+        loadRecentConversations,
         loadConversations,
         createConversation,
         deleteConversation,

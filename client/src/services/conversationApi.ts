@@ -20,6 +20,10 @@ export class ConversationApi {
         return this.client.get<ConversationDto[]>(`/conversations/user`);
     }
 
+    async getRecentConversationsByUserId(): Promise<ConversationDto[]> {
+        return this.client.get<ConversationDto[]>(`/conversations/user/recent`);
+    }
+
     async getConversation(id: string): Promise<ConversationDto> {
         return this.client.get<ConversationDto>(`/conversations/${id}`);
     }

@@ -10,7 +10,7 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [showShadow, setShowShadow] = useState(false);
-    const { isAdmin } = useAdmin();
+    const { isAdmin, isLoading: isAdminLoading } = useAdmin();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -33,6 +33,14 @@ const Header = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [location.pathname]);
+
+    useEffect(() => {
+        if (isClerkLoaded) {
+            // Add a small delay to ensure smooth transition
+            const timer = setTimeout(() => {}, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [isClerkLoaded]);
 
     const handleAuthClick = () => {
         if (!isSignedIn) {
@@ -58,16 +66,13 @@ const Header = () => {
         }
     };
 
-    // Return a placeholder with the same height during loading
-    if (!isClerkLoaded) {
-        return <div style={{ height: '80px' }} />;
-    }
+    const renderMenuLinks = () => {
+        // Wait for both Clerk and admin check to complete before showing content
+        if (!isClerkLoaded || (isSignedIn && isAdminLoading)) {
+            return <div className="header_menu" />;
+        }
 
-    return (
-        <header className={`header ${showShadow ? 'shadow' : ''}`}>
-            <div className="logo" onClick={() => handleNavigation('#hero')}>
-                <img src="/header/logo.svg" alt="Logo" />
-            </div>
+        return (
             <div className="header_menu">
                 <p onClick={() => handleNavigation('#hero')}>Home</p>
                 <p onClick={() => handleNavigation('#about')}>About</p>
@@ -76,16 +81,37 @@ const Header = () => {
                     <p onClick={() => navigate('/admin/users')}>Users</p>
                 )}
             </div>
-            {isSignedIn ? (
-                <div className="user_menu">
-                    <CustomUserButton />
-                </div>
-            ) : (
-                <div className="login_button" onClick={handleAuthClick}>
-                    <div>Login</div>
-                    <img src="/header/arrowRightBlack.svg" alt="Arrow" />
-                </div>
-            )}
+        );
+    };
+
+    const renderAuthSection = () => {
+        if (!isClerkLoaded) {
+            return <div className="user_menu" />;
+        }
+
+        return isSignedIn ? (
+            <div className="user_menu">
+                <CustomUserButton />
+            </div>
+        ) : (
+            <div className="login_button" onClick={handleAuthClick}>
+                <div>Login</div>
+                <img src="/header/arrowRightWhite.svg" alt="Arrow" />
+            </div>
+        );
+    };
+
+    return (
+        <header className={`header ${showShadow ? 'shadow' : ''}`}>
+            <div className="logo" onClick={() => handleNavigation('#hero')}>
+                {!isClerkLoaded ? (
+                    <div style={{ width: 120, height: 40 }} />
+                ) : (
+                    <img src="/header/logo.svg" alt="Logo" />
+                )}
+            </div>
+            {renderMenuLinks()}
+            {renderAuthSection()}
         </header>
     );
 };

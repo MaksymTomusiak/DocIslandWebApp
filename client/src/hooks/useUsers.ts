@@ -25,6 +25,7 @@ export const useUsers = (baseURL: string) => {
         try {
             setLoading(true);
             setError(null);
+            await new Promise(resolve => setTimeout(resolve, 700));
             const data = await userApi.getAllUsers();
             setUsers(data);
         } catch (err) {

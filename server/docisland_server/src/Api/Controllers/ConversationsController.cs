@@ -23,8 +23,20 @@ public class ConversationsController(
         return entities.Select(ConversationDto.FromDomainModel);
     }
     
+    [HttpGet("user/recent")]
+    public async Task<IEnumerable<ConversationDto>> GetRecentByUser( CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new UnauthorizedAccessException("User ID not found in token.");
+
+        var entities = await conversationQueries.GetRecentByUser(userId, cancellationToken);
+        return entities.Select(ConversationDto.FromDomainModel);
+    }
+    
     [HttpGet("user")]
-    public async Task<IEnumerable<ConversationDto>> GetAllByUser( CancellationToken cancellationToken)
+    public async Task<IEnumerable<ConversationDto>> GetByUser( CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
 

@@ -17,13 +17,27 @@ public class ConversationRepository(ApplicationDbContext context) : IConversatio
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Conversation>> GetRecentByUser(string userId, CancellationToken cancellationToken, int limit = 2)
+    {
+        return await context.Conversations
+            .Include(x => x.File)
+            .Include(x => x.Messages)
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.Messages
+                .Where(m => m.IsResponse)
+                .Max(m => m.CreatedAt))
+            .Take(limit)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+    
     public async Task<IReadOnlyList<Conversation>> GetByUser(string userId, CancellationToken cancellationToken)
     {
         return await context.Conversations
             .Include(x => x.File)
-            .AsNoTracking()
+            .Include(x => x.Messages)
             .Where(x => x.UserId == userId)
-            .OrderByDescending(x => x.CreatedAt)
+            .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
 

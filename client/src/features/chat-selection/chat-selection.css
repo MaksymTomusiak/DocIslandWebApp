@@ -2,9 +2,9 @@
     background-color: #f9fafb;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100%;
     align-items: center;
-    padding: 100px 0 40px 0;
+    padding-top: 80px;
 }
 
 .selection-header {
@@ -126,6 +126,35 @@
     text-align: center;
 }
 
+.spinner-overlay.spinner-small {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-small .spinner {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .start-chat-button {
     width: 200px;
     height: 60px;
@@ -137,6 +166,9 @@
     transition: all 0.2s ease;
     border: none;
     background-color: #59abb2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .start-chat-button:hover {

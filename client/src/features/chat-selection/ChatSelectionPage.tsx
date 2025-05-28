@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useConversation } from '../../hooks/useConversation';
+import Spinner from '../../components/common/spinner/Spinner';
+import './chat-selection.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -9,18 +11,18 @@ const ChatSelectionPage = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isStartingChat, setIsStartingChat] = useState(false);
     const {
         conversations,
         loading,
+        isCreatingChat,
         error,
-        loadConversations,
+        loadRecentConversations,
         createConversation,
     } = useConversation(API_BASE_URL);
 
     useEffect(() => {
-        loadConversations();
-    }, [loadConversations]);
+        loadRecentConversations();
+    }, [loadRecentConversations]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -55,13 +57,10 @@ const ChatSelectionPage = () => {
     const handleStartChat = useCallback(async () => {
         if (selectedFile) {
             try {
-                setIsStartingChat(true);
                 const conversation = await createConversation(selectedFile);
                 navigate(`/chat/${conversation.id}`);
             } catch (err) {
                 console.error('Failed to create conversation:', err);
-            } finally {
-                setIsStartingChat(false);
             }
         }
     }, [selectedFile, createConversation, navigate]);
@@ -108,11 +107,16 @@ const ChatSelectionPage = () => {
                                 <button
                                     className="start-chat-button"
                                     onClick={handleStartChat}
-                                    disabled={isStartingChat}
+                                    disabled={isCreatingChat}
                                 >
-                                    {isStartingChat
-                                        ? 'Creating...'
-                                        : 'Start Chat'}
+                                    {isCreatingChat ? (
+                                        <Spinner size="small" />
+                                    ) : (
+                                        <>
+                                            <span>Start Chat</span>
+                                            <Icon icon="material-symbols:arrow-forward" />
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </>
@@ -123,12 +127,8 @@ const ChatSelectionPage = () => {
                     <div className="chat-history-list">
                         {loading ? (
                             <div className="loading-conversations">
-                                <span className="loading-dots">
-                                    <span>.</span>
-                                    <span>.</span>
-                                    <span>.</span>
-                                </span>
-                                Loading conversations...
+                                <Spinner size="small" />
+                                <span>Loading conversations...</span>
                             </div>
                         ) : error ? (
                             <p className="error">{error}</p>

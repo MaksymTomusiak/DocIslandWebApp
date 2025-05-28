@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useUsers } from '../../hooks/useUsers';
 import { useAdmin } from '../../contexts/AdminContext';
 import { useAuthToken } from '../../hooks/useAuthToken';
-import Spinner from '../../components/common/spinner/Spinner';
+import AdminUsersSkeleton from './AdminUsersSkeleton';
 import './admin-users.css';
 
 const AdminUsersPage = () => {
@@ -20,7 +20,8 @@ const AdminUsersPage = () => {
     if (isTokenLoading || loading) {
         return (
             <div className="admin-users-container">
-                <Spinner />
+                <h1>User Management</h1>
+                <AdminUsersSkeleton />
             </div>
         );
     }

@@ -1,7 +1,11 @@
 import './spinner.css';
 
-const Spinner = () => (
-    <div className="spinner-overlay">
+interface SpinnerProps {
+    size?: 'small' | 'medium' | 'large';
+}
+
+const Spinner = ({ size = 'medium' }: SpinnerProps) => (
+    <div className={`spinner-overlay spinner-${size}`}>
         <div className="spinner" />
     </div>
 );

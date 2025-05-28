@@ -48,11 +48,18 @@ public class CreateMessageCommandHandler(
                 {
                     var response = await llmService.AskQuestionAsync(conversation.FileId.Value, request.Content, cancellationToken);
                     
+                    // Handle null or empty response
+                    if (string.IsNullOrEmpty(response))
+                    {
+                        response = "No response was received from the AI. Please try again later.";
+                    }
+                    
                     return await CreateMessage(response, conversationId, cancellationToken, isResponse: true);
                 }
                 catch (Exception ex)
                 {
-                    return new MessagLlmException(ex);
+                    var errorMessage = "The AI service is currently unavailable. Please try again later.";
+                    return await CreateMessage(errorMessage, conversationId, cancellationToken, isResponse: true);
                 }
             },
             () => Task.FromResult<Either<MessageException, Message>>(new MessageConversationNotFoundException(request.ConversationId))
@@ -62,7 +69,7 @@ public class CreateMessageCommandHandler(
     private async Task<Either<MessageException,Message>> CreateMessage(string content, ConversationId conversationId,  CancellationToken cancellationToken, bool isResponse = false)
     {
         try
-        {
+        {            
             var entity = Message.New(content, conversationId, isResponse);
             
             return await messageRepository.Add(entity, cancellationToken);

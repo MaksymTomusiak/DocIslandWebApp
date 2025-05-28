@@ -13,10 +13,16 @@ import { BanProvider } from './contexts/BanContext';
 
 function App() {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdminLoading, setIsAdminLoading] = useState(true);
     const [isBanned, setIsBanned] = useState(false);
 
     return (
-        <AdminProvider isAdmin={isAdmin} setIsAdmin={setIsAdmin}>
+        <AdminProvider
+            isAdmin={isAdmin}
+            setIsAdmin={setIsAdmin}
+            isLoading={isAdminLoading}
+            setIsLoading={setIsAdminLoading}
+        >
             <BanProvider isBanned={isBanned} setIsBanned={setIsBanned}>
                 <Router />
             </BanProvider>

@@ -25,7 +25,7 @@ export interface ConversationCreateDto {
 export interface UserDto {
     id: string;
     email: string;
-    username: string;
+    userName: string;
     isAdmin: boolean;
     isBanned: boolean;
 }

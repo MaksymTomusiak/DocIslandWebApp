@@ -19,6 +19,11 @@ const Header = () => {
                 return;
             }
 
+            if (location.pathname === '/admin/users') {
+                setShowShadow(false);
+                return;
+            }
+
             if (location.pathname !== '/') {
                 setShowShadow(true);
                 return;

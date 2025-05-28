@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider, SignedOut } from '@clerk/clerk-react';
 import Layout from '../components/layout/Layout';
 import HomePage from '../features/homePage/HomePage';
@@ -6,7 +6,6 @@ import AiChatPage from '../features/ai-chat/AiChatPage';
 import ChatSelectionPage from '../features/chat-selection/ChatSelectionPage';
 import NotFoundPage from '../components/common/not-found/NotFoundPage';
 import AdminUsersPage from '../features/admin/AdminUsersPage';
-import BannedPage from '../pages/BannedPage';
 import ClerkProtectedRoute from './ClerkProtectedRoute';
 import AdminProtectedRoute from '../components/auth/AdminProtectedRoute';
 import BanProtectedRoute from '../components/auth/BanProtectedRoute';
@@ -82,7 +81,9 @@ const Router = () => {
                             path="/banned"
                             element={
                                 <ClerkProtectedRoute>
-                                    <BannedPage />
+                                    <BanProtectedRoute>
+                                        <Navigate to="/" replace />
+                                    </BanProtectedRoute>
                                 </ClerkProtectedRoute>
                             }
                         />

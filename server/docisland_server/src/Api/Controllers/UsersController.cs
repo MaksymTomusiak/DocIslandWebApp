@@ -2,12 +2,12 @@ using Api.Dtos;
 using Api.Extensions;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
+using Application.Common.Models;
 using Application.Users.Commands;
 using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Api.Authorization;
 
 namespace Api.Controllers;
@@ -18,18 +18,31 @@ public class UsersController(UserManager<User> userManager, ISender sender, IUse
 {
     [HttpGet]
     [AdminAuthorize]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<ActionResult<PaginatedResultDto<UserDto>>> GetAll(
+        [FromQuery] PaginationParameters parameters,
+        CancellationToken cancellationToken = default)
     {
-        var users = await userManager.Users.ToListAsync(cancellationToken);
-        var userDtos = new List<UserDto>();
+        var result = await userQueries.GetPaginatedUsers(
+            parameters.PageNumber,
+            parameters.PageSize,
+            parameters.SearchTerm,
+            parameters.SortBy,
+            parameters.SortDescending,
+            cancellationToken);
 
-        foreach (var user in users)
+        var userDtos = new List<UserDto>();
+        foreach (var user in result.Items)
         {
             var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
             userDtos.Add(UserDto.FromDomainModel(user, isAdmin));
         }
 
-        return Ok(userDtos);
+        return Ok(new PaginatedResultDto<UserDto>(
+            userDtos,
+            result.TotalCount,
+            result.PageNumber,
+            result.PageSize,
+            result.TotalPages));
     }
 
     [HttpGet("check-admin")]

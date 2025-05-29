@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Queries;
-using Application.Common.Interfaces.Repositories;
+using Application.Common.Models;
 using Domain.Users;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
@@ -34,5 +34,55 @@ public class UserRepository : IUserQueries
         }
 
         return await _userManager.IsInRoleAsync(user, "Admin");
+    }
+
+    public async Task<PaginatedResult<User>> GetPaginatedUsers(
+        int pageNumber,
+        int pageSize,
+        string? searchTerm = null,
+        string? sortBy = null,
+        bool sortDescending = false,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _userManager.Users.AsNoTracking();
+
+        // Apply search if searchTerm is provided
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchTerm = searchTerm.ToLower();
+            query = query.Where(u => 
+                u.UserName!.ToLower().Contains(searchTerm) || 
+                u.Email!.ToLower().Contains(searchTerm));
+        }
+
+        // Apply sorting
+        query = sortBy?.ToLower() switch
+        {
+            "username" => sortDescending 
+                ? query.OrderByDescending(u => u.UserName)
+                : query.OrderBy(u => u.UserName),
+            "email" => sortDescending 
+                ? query.OrderByDescending(u => u.Email)
+                : query.OrderBy(u => u.Email),
+            _ => query.OrderBy(u => u.UserName)
+        };
+
+        // Get total count
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        // Apply pagination
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        return new PaginatedResult<User>(
+            items,
+            totalCount,
+            pageNumber,
+            pageSize,
+            totalPages);
     }
 } 

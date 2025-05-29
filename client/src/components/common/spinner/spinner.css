@@ -30,6 +30,8 @@
     width: 16px;
     height: 16px;
     border-width: 2px;
+    border-color: #59abb2;
+    border-top-color: #ffffff;
 }
 
 .spinner-medium {

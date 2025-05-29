@@ -9,13 +9,16 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Api.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Api.Controllers;
 
 [Route("users")]
 [ApiController]
-public class UsersController(UserManager<User> userManager, ISender sender, IUserQueries userQueries) : ControllerBase
+public class UsersController(UserManager<User> userManager, ISender sender, IUserQueries userQueries, IMemoryCache cache) : ControllerBase
 {
+    private const string UserCacheKeyPrefix = "user_";
+
     [HttpGet]
     [AdminAuthorize]
     public async Task<ActionResult<PaginatedResultDto<UserDto>>> GetAll(
@@ -81,6 +84,11 @@ public class UsersController(UserManager<User> userManager, ISender sender, IUse
     public async Task<IActionResult> ToggleBan(string userId)
     {
         var result = await sender.Send(new ToggleUserBanCommand { UserId = userId });
+        if (result.IsRight)
+        {
+            // Clear the user from cache to force a fresh fetch
+            cache.Remove($"{UserCacheKeyPrefix}{userId}");
+        }
         return result.Match(
             isBanned => Ok(new { isBanned }),
             error => error.ToObjectResult()

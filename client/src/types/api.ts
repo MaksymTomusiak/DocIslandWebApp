@@ -30,6 +30,24 @@ export interface UserDto {
     isBanned: boolean;
 }
 
+export interface PaginationParameters {
+    pageNumber: number;
+    pageSize: number;
+    searchTerm?: string;
+    sortBy?: string;
+    sortDescending?: boolean;
+}
+
+export interface PaginatedResultDto<T> {
+    items: T[];
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
+
 export interface ApiError {
     message: string;
     statusCode: number;

@@ -84,8 +84,7 @@ public class ClerkUserSyncMiddleware
                         Id = user.Id,
                         Email = user.Email,
                         UserName = user.UserName,
-                        EmailConfirmed = user.EmailConfirmed,
-                        IsBanned = user.IsBanned
+                        EmailConfirmed = user.EmailConfirmed
                     };
 
                     if (email != null && email != user.Email)

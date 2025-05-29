@@ -1,11 +1,11 @@
 import { useState, useCallback, useMemo } from 'react';
 import { UserApi } from '../services/userApi';
-import { UserDto } from '../types/api';
+import { UserDto, PaginatedResultDto, PaginationParameters } from '../types/api';
 import { useAuthToken } from './useAuthToken';
 
 export const useUsers = (baseURL: string) => {
     const { token, isLoading: isTokenLoading } = useAuthToken();
-    const [users, setUsers] = useState<UserDto[]>([]);
+    const [users, setUsers] = useState<PaginatedResultDto<UserDto> | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -19,18 +19,20 @@ export const useUsers = (baseURL: string) => {
         [baseURL, token]
     );
 
-    const loadUsers = useCallback(async () => {
+    const fetchPaginatedUsers = useCallback(async (params: PaginationParameters) => {
         if (!token) return;
 
         try {
             setLoading(true);
             setError(null);
             await new Promise(resolve => setTimeout(resolve, 700));
-            const data = await userApi.getAllUsers();
+            const data = await userApi.getPaginatedUsers(params);
             setUsers(data);
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : 'Failed to load users'
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to fetch users'
             );
         } finally {
             setLoading(false);
@@ -43,13 +45,17 @@ export const useUsers = (baseURL: string) => {
                 setLoading(true);
                 setError(null);
                 const newAdminStatus = await userApi.toggleAdmin(userId);
-                setUsers((prev) =>
-                    prev.map((user) =>
-                        user.id === userId
-                            ? { ...user, isAdmin: newAdminStatus }
-                            : user
-                    )
-                );
+                setUsers((prev) => {
+                    if (!prev) return null;
+                    return {
+                        ...prev,
+                        items: prev.items.map((user) =>
+                            user.id === userId
+                                ? { ...user, isAdmin: newAdminStatus }
+                                : user
+                        ),
+                    };
+                });
                 return newAdminStatus;
             } catch (err) {
                 setError(
@@ -71,13 +77,17 @@ export const useUsers = (baseURL: string) => {
                 setLoading(true);
                 setError(null);
                 const newBanStatus = await userApi.toggleBan(userId);
-                setUsers((prev) =>
-                    prev.map((user) =>
-                        user.id === userId
-                            ? { ...user, isBanned: newBanStatus }
-                            : user
-                    )
-                );
+                setUsers((prev) => {
+                    if (!prev) return null;
+                    return {
+                        ...prev,
+                        items: prev.items.map((user) =>
+                            user.id === userId
+                                ? { ...user, isBanned: newBanStatus }
+                                : user
+                        ),
+                    };
+                });
                 return newBanStatus;
             } catch (err) {
                 setError(
@@ -97,7 +107,7 @@ export const useUsers = (baseURL: string) => {
         users,
         loading: loading || isTokenLoading,
         error,
-        loadUsers,
+        fetchPaginatedUsers,
         toggleAdmin,
         toggleBan,
     };

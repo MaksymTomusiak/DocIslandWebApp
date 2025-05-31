@@ -1,59 +1,86 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - docisland-site
+name: Build and deploy Fullstack App to Azure Web App - docisland-site
 
 on:
   push:
     branches:
-      - develop
-  workflow_dispatch:
+      - develop # Assuming you want to deploy from the 'develop' branch
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+env:
+  AZURE_WEBAPP_NAME: 'docisland-site' # <--- Your App Service name
+  DOTNET_ROOT_DIR: 'server/docisland_server' # Path to your .NET project
+  REACT_ROOT_DIR: 'client' # Path to your React project
+  OUTPUT_DIR: 'deploy-output' # Directory to stage combined build for deployment
 
 jobs:
-  build:
+  build-and-deploy: # Changed job name to reflect fullstack build and deploy
     runs-on: ubuntu-latest
+    environment:
+      name: 'Production' # Keep this for environment linking
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT for Azure Login
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # Checkout your repository code
 
-      - name: Set up .NET Core
+      # --- Build React Frontend ---
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x' # Use your specific Node.js version for React
+
+      - name: Install React dependencies
+        working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm install in the 'client' directory
+        run: npm install
+
+      - name: Build React app
+        working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm build in the 'client' directory
+        run: npm run build
+        env:
+          # Pass environment variables for React build from Azure App Settings (GitHub secrets)
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }}
+          # Note: VITE_CLERK_SECRET_KEY is for backend and should NOT be here.
+
+      # --- Build .NET Backend ---
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '8.0.x' # Or '8.x' if you prefer, ensures .NET 8 SDK
 
-      - name: Build with dotnet
+      - name: Restore .NET dependencies
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run dotnet restore in the 'server/docisland_server' directory
+        run: dotnet restore
+
+      - name: Build .NET app
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run dotnet build in the 'server/docisland_server' directory
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run dotnet publish in the 'server/docisland_server' directory
+        # Publish output to a specific directory within the GitHub Actions workspace
+        run: dotnet publish -c Release -o ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+      # --- Combine and Prepare for Deployment ---
+      - name: Create wwwroot and copy React build
+        run: |
+          # Create a wwwroot directory inside the published .NET API folder
+          mkdir -p ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot
+          # Copy the built React static files (from client/build) into the wwwroot folder
+          cp -r ${{ env.REACT_ROOT_DIR }}/build/* ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot/
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
+      # --- Azure Login and Deploy ---
+      # No need to download artifact, as we're deploying the combined output directly
       - name: Login to Azure
         uses: azure/login@v2
         with:
+          # These secrets are automatically created by Azure when you set up Deployment Center
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_CFAEDEF3DF2946789DB06D7C82B64292 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CC8CCD7832C54CBCB026B9FE44B5AF40 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_51356D2B8A6746C3BDB5B22E0EEA297B }}
@@ -62,7 +89,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'docisland-site'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Use the variable defined at the top
+          slot-name: 'Production' # Or your staging slot if applicable
+          package: ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api # Deploy the combined output directory

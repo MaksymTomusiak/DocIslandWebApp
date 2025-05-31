@@ -16,7 +16,6 @@ public static class ConfigurePersistence
 {
      public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
      {
-         var t = configuration.GetConnectionString("Default");
         var dataSourceBuild = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("Default"));
         dataSourceBuild.EnableDynamicJson();
         var dataSource = dataSourceBuild.Build();

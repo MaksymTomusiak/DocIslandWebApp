@@ -73,7 +73,7 @@ jobs:
           # Create a wwwroot directory inside the published .NET API folder
           mkdir -p ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot
           # Copy the built React static files (from client/build) into the wwwroot folder
-          cp -r ${{ env.REACT_ROOT_DIR }}/dist/* ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot/
+          cp -r ${{ env.REACT_ROOT_DIR }}/dist/* ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/
 
       # --- Azure Login and Deploy ---
       # No need to download artifact, as we're deploying the combined output directly

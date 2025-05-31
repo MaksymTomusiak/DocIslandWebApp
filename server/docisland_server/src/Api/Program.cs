@@ -64,6 +64,8 @@ var app = builder.Build();
 
 app.UseStaticFiles();
 
+app.UseRouting();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -82,6 +84,8 @@ app.UseClerkUserSync();
 
 await app.InitializeDb();
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
 

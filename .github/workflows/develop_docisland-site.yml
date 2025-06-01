@@ -44,7 +44,7 @@ jobs:
         env:
           # Pass environment variables for React build from Azure App Settings (GitHub secrets)
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
           VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }}
           # Note: VITE_CLERK_SECRET_KEY is for backend and should NOT be here.
 

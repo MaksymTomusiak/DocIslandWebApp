@@ -47,14 +47,6 @@ jobs:
           VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }}
           # The problematic empty line with spaces/tabs was HERE. It should be removed or made truly blank.
 
-      # TEMPORARY DEBUG STEP: Check if VITE_CLERK_PUBLISHABLE_KEY is being passed
-      # Ensure exact indentation: 'name' and '-' start at column 7, 'working-directory', 'run', 'env' at column 9, and the VITE_ variable at column 11.
-      - name: Debug VITE_CLERK_PUBLISHABLE_KEY (Temporary)
-        working-directory: ${{ env.REACT_ROOT_DIR }}
-        run: echo "VITE_CLERK_PUBLISHABLE_KEY from GitHub Actions build is ${{secrets.VITE_CLERK_PUBLISHABLE_KEY}}"
-        env:
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
-          # VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }} # Uncomment if you want to debug this too
       # --- Build .NET Backend ---
       - name: Set up .NET
         uses: actions/setup-dotnet@v4

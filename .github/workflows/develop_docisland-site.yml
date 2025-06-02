@@ -46,7 +46,9 @@ jobs:
           echo "VITE_API_BASE_URL (from workflow env block): ${VITE_API_BASE_URL}"
           echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}"
           echo "----------------------------------------------------------------------"
-          npm run build
+          # This is the crucial change: Explicitly pass VITE_CLERK_PUBLISHABLE_KEY directly to npm run build.
+          # The quotes around ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} are important for robustness.
+          VITE_CLERK_PUBLISHABLE_KEY="${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" npm run build
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
           VITE_API_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net

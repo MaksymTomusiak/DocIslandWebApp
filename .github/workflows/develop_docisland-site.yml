@@ -40,7 +40,13 @@ jobs:
 
       - name: Build React app
         working-directory: ${{ env.REACT_ROOT_DIR }}
-        run: npm run build
+        run: |
+          echo "--- Environment variables in 'Build React app' step before npm build ---"
+          echo "VITE_CLERK_PUBLISHABLE_KEY (from workflow env block): ${VITE_CLERK_PUBLISHABLE_KEY}"
+          echo "VITE_API_BASE_URL (from workflow env block): ${VITE_API_BASE_URL}"
+          echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}"
+          echo "----------------------------------------------------------------------"
+          npm run build
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
           VITE_API_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net

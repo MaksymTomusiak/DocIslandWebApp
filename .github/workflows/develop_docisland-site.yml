@@ -39,15 +39,22 @@ jobs:
         run: npm install
 
       - name: Build React app
-        working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm build in the 'client' directory
+        working-directory: ${{ env.REACT_ROOT_DIR }}
         run: npm run build
         env:
-          # Pass environment variables for React build from Azure App Settings (GitHub secrets)
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
           VITE_API_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
           VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }}
-          # Note: VITE_CLERK_SECRET_KEY is for backend and should NOT be here.
+          # The problematic empty line with spaces/tabs was HERE. It should be removed or made truly blank.
 
+      # TEMPORARY DEBUG STEP: Check if VITE_CLERK_PUBLISHABLE_KEY is being passed
+      # Ensure exact indentation: 'name' and '-' start at column 7, 'working-directory', 'run', 'env' at column 9, and the VITE_ variable at column 11.
+      - name: Debug VITE_CLERK_PUBLISHABLE_KEY (Temporary)
+        working-directory: ${{ env.REACT_ROOT_DIR }}
+        run: echo "VITE_CLERK_PUBLISHABLE_KEY from GitHub Actions build is ${{secrets.VITE_CLERK_PUBLISHABLE_KEY}}"
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          # VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }} # Uncomment if you want to debug this too
       # --- Build .NET Backend ---
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -68,10 +75,10 @@ jobs:
         run: dotnet publish -c Release -o ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api
 
       # --- Combine and Prepare for Deployment ---
-      - name: Create wwwroot and copy React build
+      - name: Create wwwroot and copy React build # Suggest renaming this to 'Copy React build to API publish output'
         run: |
           # Create a wwwroot directory inside the published .NET API folder
-          mkdir -p ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot
+          # mkdir -p ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/wwwroot # <--- REMOVE OR COMMENT OUT THIS LINE
           # Copy the built React static files (from client/build) into the wwwroot folder
           cp -r ${{ env.REACT_ROOT_DIR }}/dist/* ${{ github.workspace }}/${{ env.OUTPUT_DIR }}/api/
 

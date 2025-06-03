@@ -4,7 +4,7 @@
 name: Deploy DocIsland Backend API to Azure Web App
 
 on:
-  # Trigger on pushes to the 'develop' branch (adjust if your main branch is different)
+  # Trigger on pushes to the 'develop' branch
   push:
     branches:
       - develop
@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'docisland-api-site' # <--- IMPORTANT: Your Backend App Service name (e.g., 'docisland-api-site')
+  AZURE_WEBAPP_NAME: 'docisland-server' # <--- CONFIRMED: Your Backend App Service name
   DOTNET_ROOT_DIR: 'server/docisland_server' # Path to your .NET project within the repository
   OUTPUT_DIR: 'publish_api_output' # Directory where the published API artifacts will be stored
 
@@ -52,14 +52,16 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_43595381280E4086B636CED947A18366 }}Add commentMore actions
+          # --- CONFIRMED: These are the specific secret names from your auto-generated YML ---
+          # Make sure these secrets exist in your GitHub repository's settings (Settings -> Secrets and variables -> Actions)
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_43595381280E4086B636CED947A18366 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_22DEC5A8CBFF47C29595F6CF853A8F5C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DABD555D6A3F445796345ED58BF0D223 }}
-          
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp # ID for referencing outputs (like the URL)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'docisland-server'
-          slot-name: 'Production'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Your backend App Service name ('docisland-server')
+          slot-name: 'Production' # Deploy to the Production slot
           package: ${{ github.workspace }}/${{ env.OUTPUT_DIR }} # Deploy the published API artifacts

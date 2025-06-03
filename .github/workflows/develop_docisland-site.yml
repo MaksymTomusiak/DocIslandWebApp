@@ -37,26 +37,19 @@ jobs:
       - name: Install React dependencies
         working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm install in the 'client' directory
         run: npm install
-
-       - name: Build React app
+        
+      - name: Build React app
         working-directory: ${{ env.REACT_ROOT_DIR }}
         run: |
-          echo "--- Environment variables in 'Build React app' step before npm build (for verification) ---"
-          echo "NODE_ENV: ${NODE_ENV}" # Add this line to confirm NODE_ENV
+          echo "--- Environment variables in 'Build React app' step before npm build ---"
           echo "VITE_CLERK_PUBLISHABLE_KEY (from workflow env block): ${VITE_CLERK_PUBLISHABLE_KEY}"
           echo "VITE_API_BASE_URL (from workflow env block): ${VITE_API_BASE_URL}"
           echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}"
-          echo "-----------------------------------------------------------------------------------"
-          
-          # Explicitly set NODE_ENV and pass VITE_CLERK_PUBLISHABLE_KEY directly to npm run build.
-          # The quotes around the secrets are important for robustness.
-          NODE_ENV=production VITE_CLERK_PUBLISHABLE_KEY="${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" \
-          VITE_API_BASE_URL="https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net" \
-          VITE_CLERK_JWT_TEMPLATE="${{ secrets.VITE_CLERK_JWT_TEMPLATE }}" npm run build
+          echo "----------------------------------------------------------------------"
+          # This is the crucial change: Explicitly pass VITE_CLERK_PUBLISHABLE_KEY directly to npm run build.
+          # The quotes around ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} are important for robustness.
+          VITE_CLERK_PUBLISHABLE_KEY="${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" npm run build
         env:
-          # Keep these in the env block for the 'echo' commands above to work correctly,
-          # and as a general declaration for the step's environment.
-          NODE_ENV: production # Explicitly set NODE_ENV for the step's environment
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
           VITE_API_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
           VITE_CLERK_JWT_TEMPLATE: ${{ secrets.VITE_CLERK_JWT_TEMPLATE }}

@@ -66,21 +66,17 @@ jobs:
           echo "-----------------------------------------------------------------------------------"
 
           echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) BEFORE build:"
-          ls -la . # List contents of the 'client' directory before running npm build
+          ls -la .
 
-          # Explicitly set NODE_ENV for the shell session, then run build
           export NODE_ENV=production
           npm run build
-
-          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) AFTER build:"
-          ls -la . # List contents of the 'client' directory after running npm build
-
-          echo "DEBUGGING: Listing contents of the expected dist folder after build (if it exists):"
-          ls -la ./dist/ # Attempt to list contents of 'client/dist'
           
-          # Optional: Verify the 'dist' folder content for debugging
-          echo "DEBUGGING: Contents of the client/dist folder after build:"
-          ls -F ${{ env.REACT_ROOT_DIR }}/dist/
+          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) AFTER build:"
+          ls -la .
+
+          # --- THIS IS THE ONLY LINE THAT CHANGED ---
+          echo "DEBUGGING: Contents of the client/dist folder after build (confirming existence):"
+          ls -la ./dist/ # Corrected path relative to working-directory
 
       - name: Azure Login
         uses: azure/login@v2

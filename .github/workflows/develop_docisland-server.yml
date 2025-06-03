@@ -12,28 +12,29 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'docisland-api-site' # <--- IMPORTANT: Ensure this matches your actual backend App Service name
-  DOTNET_ROOT_DIR: 'server/docisland_server' # Path to your .NET project
-  OUTPUT_DIR: 'publish_api_output' # Directory to stage published API artifacts
+  AZURE_WEBAPP_NAME: 'docisland-api-site' # <--- IMPORTANT: Your Backend App Service name (e.g., 'docisland-api-site')
+  DOTNET_ROOT_DIR: 'server/docisland_server' # Path to your .NET project within the repository
+  OUTPUT_DIR: 'publish_api_output' # Directory where the published API artifacts will be stored
 
 jobs:
   build-and-deploy-backend:
-    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner for your build
     environment:
       name: 'Production' # Link to your production environment in GitHub (optional but good practice)
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} # Provides a direct link to the deployed app
+
     permissions:
       contents: read # Required for actions/checkout to read your repository code
-      id-token: write # Required for secure Azure login (OpenID Connect)
+      id-token: write # Required for secure Azure login using OpenID Connect
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository Code
         uses: actions/checkout@v4 # Get your repository code
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # <--- IMPORTANT: Ensure this matches your .NET version
+          dotnet-version: '8.0.x' # <--- IMPORTANT: Ensure this matches your .NET version (e.g., '8.0.x')
 
       - name: Restore .NET dependencies
         working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
@@ -41,32 +42,24 @@ jobs:
 
       - name: Build .NET app
         working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore # --no-restore to avoid re-restoring
 
       - name: Publish .NET app
         working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
-        # Publish output directly to the specified OUTPUT_DIR in the GitHub Actions workspace
+        # Publish the release build directly to the specified OUTPUT_DIR in the GitHub Actions workspace
         run: dotnet publish -c Release -o ${{ github.workspace }}/${{ env.OUTPUT_DIR }}
 
-      - name: Login to Azure
+      - name: Azure Login
         uses: azure/login@v2
         with:
-          # IMPORTANT: You need to generate these secrets for your *new backend App Service*.
-          # How to get them:
-          # 1. Go to your 'docisland-api-site' App Service in the Azure Portal.
-          # 2. In the left navigation, go to "Deployment Center".
-          # 3. Choose "GitHub Actions" as the source.
-          # 4. Follow the steps; Azure will guide you to generate these secrets and add them to your repo automatically.
-          #    Alternatively, you can manually create secrets in your GitHub repo settings.
-          client-id: ${{ secrets.AZUREAPPSERVICE_BACKEND_CLIENTID }} # Placeholder - replace with your actual generated secret name
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_BACKEND_TENANTID }} # Placeholder - replace with your actual generated secret name
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_BACKEND_SUBSCRIPTIONID }} # Placeholder - replace with your actual generated secret name
-
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_43595381280E4086B636CED947A18366 }}Add commentMore actions
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_22DEC5A8CBFF47C29595F6CF853A8F5C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DABD555D6A3F445796345ED58BF0D223 }}
+          
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp # ID for referencing outputs (like URL)
+        id: deploy-to-webapp # ID for referencing outputs (like the URL)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Your backend App Service name
-          slot-name: 'Production' # Or your staging slot if applicable
-          package: ${{ github.workspace }}/${{ env.OUTPUT_DIR }} # Deploy the published API output directory
-          
+          app-name: 'docisland-server'
+          slot-name: 'Production'
+          package: ${{ github.workspace }}/${{ env.OUTPUT_DIR }} # Deploy the published API artifacts

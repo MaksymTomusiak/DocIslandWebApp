@@ -64,10 +64,19 @@ jobs:
           echo "VITE_API_BASE_URL (from workflow env block): ${VITE_API_BASE_URL}" # This will be masked from global env.
           echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}" # This will be masked from global env.
           echo "-----------------------------------------------------------------------------------"
-          
+
+          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) BEFORE build:"
+          ls -la . # List contents of the 'client' directory before running npm build
+
           # Explicitly set NODE_ENV for the shell session, then run build
           export NODE_ENV=production
           npm run build
+
+          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) AFTER build:"
+          ls -la . # List contents of the 'client' directory after running npm build
+
+          echo "DEBUGGING: Listing contents of the expected dist folder after build (if it exists):"
+          ls -la ./dist/ # Attempt to list contents of 'client/dist'
           
           # Optional: Verify the 'dist' folder content for debugging
           echo "DEBUGGING: Contents of the client/dist folder after build:"

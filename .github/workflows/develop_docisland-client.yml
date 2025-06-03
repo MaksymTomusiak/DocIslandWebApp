@@ -4,67 +4,65 @@
 name: Deploy DocIsland Frontend App to Azure Web App
 
 on:
-  # Trigger on pushes to the 'develop' branch
   push:
     branches:
       - develop
-  # Allows you to manually trigger the workflow from the GitHub Actions tab
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'docisland-client' # <--- IMPORTANT: Your Frontend App Service name
+  AZURE_WEBAPP_NAME: 'docisland-client' # Your Frontend App Service name
   REACT_ROOT_DIR: 'client' # Path to your React project within the repository
-  # This is the URL for your BACKEND API, which your frontend will call
-  BACKEND_WEBAPP_NAME: 'docisland-server' # <--- IMPORTANT: Your Backend App Service name
+  # REMOVED: BACKEND_WEBAPP_NAME as we will use the secret directly
 
 jobs:
   build-and-deploy-frontend:
-    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
     environment:
-      name: 'Production' # Link to your production environment in GitHub (optional)
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} # Provides a direct link to the deployed app
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     permissions:
-      contents: read # Required for actions/checkout to read your repository code
-      id-token: write # Required for secure Azure login (OpenID Connect)
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout Repository Code
-        uses: actions/checkout@v4 # Get your repository code
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # <--- IMPORTANT: Ensure this matches your Node.js version for React
+          node-version: '20.x'
 
       - name: Install React dependencies
-        working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm install in your 'client' directory
+        working-directory: ${{ env.REACT_ROOT_DIR }}
         run: npm install
 
       - name: Create .env.production file for Vite
-        working-directory: ${{ env.REACT_ROOT_DIR }} # Create the file in the 'client' directory
+        working-directory: ${{ env.REACT_ROOT_DIR }}
         run: |
           echo "DEBUG: Creating .env.production file for Vite build..."
-          # Write VITE_CLERK_PUBLISHABLE_KEY from GitHub Secrets
           echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > .env.production
-          # Write VITE_API_BASE_URL pointing to your deployed backend
-          echo "VITE_API_BASE_URL=https://${{ env.BACKEND_WEBAPP_NAME }}.azurewebsites.net" >> .env.production
-          # Write VITE_CLERK_JWT_TEMPLATE from GitHub Secrets
+          # --- UPDATED LINE ---
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env.production
+          # --- END UPDATED LINE ---
           echo "VITE_CLERK_JWT_TEMPLATE=${{ secrets.VITE_CLERK_JWT_TEMPLATE }}" >> .env.production
           
           echo "DEBUGGING: Contents of .env.production (secrets will be masked as ***):"
-          cat .env.production # Verify the file content in logs (secrets will be masked)
+          cat .env.production
 
       - name: Build React app
-        working-directory: ${{ env.REACT_ROOT_DIR }} # Run npm build in your 'client' directory
+        working-directory: ${{ env.REACT_ROOT_DIR }}
         run: |
           echo "--- Environment variables in 'Build React app' step before npm build (for verification) ---"
-          echo "NODE_ENV: ${NODE_ENV}" # This will be empty, as Vite reads from .env files, not shell env for this.
-          echo "VITE_CLERK_PUBLISHABLE_KEY (from workflow env block): ${VITE_CLERK_PUBLISHABLE_KEY}" # This will be masked from global env.
-          echo "VITE_API_BASE_URL (from workflow env block): ${VITE_API_BASE_URL}" # This will be masked from global env.
-          echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}" # This will be masked from global env.
+          echo "NODE_ENV: ${NODE_ENV}"
+          echo "VITE_CLERK_PUBLISHABLE_KEY (from workflow env block): ${VITE_CLERK_PUBLISHABLE_KEY}"
+          # --- UPDATED ECHO LINE (Optional: for clarity in logs) ---
+          echo "VITE_API_BASE_URL (from workflow secrets): ${{ secrets.VITE_API_BASE_URL }}"
+          # --- END UPDATED ECHO LINE ---
+          echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}"
           echo "-----------------------------------------------------------------------------------"
-
+          
           echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) BEFORE build:"
           ls -la .
 
@@ -74,22 +72,20 @@ jobs:
           echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) AFTER build:"
           ls -la .
 
-          # --- THIS IS THE ONLY LINE THAT CHANGED ---
           echo "DEBUGGING: Contents of the client/dist folder after build (confirming existence):"
-          ls -la ./dist/ # Corrected path relative to working-directory
+          ls -la ./dist/
 
       - name: Azure Login
         uses: azure/login@v2
         with:
-          # --- CONFIRMED: These are the specific secret names from your auto-generated YML for docisland-client ---
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_24CEEBC3D2D04B22AE2A1743F3C4C8EF }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_612737B8D2F247328F4DBC7E968FDABE }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_21F92C688E0E41DB98A69F8C8ADD4ACA }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp # ID for referencing outputs (like the URL)
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Your frontend App Service name ('docisland-client')
-          slot-name: 'Production' # Deploy to the Production slot
-          package: ${{ env.REACT_ROOT_DIR }}/dist # Deploy the 'dist' folder directly
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'Production'
+          package: ${{ env.REACT_ROOT_DIR }}/dist

@@ -13,6 +13,8 @@ public class LlmService(HttpClient httpClient, IFileStorageService fileStorageSe
 
     public async Task<string> AskQuestionAsync(Guid fileId, string question, CancellationToken cancellationToken)
     {
+        httpClient.Timeout = TimeSpan.FromMinutes(5);
+        
         var askEndpoint = _llmEndpoint + "/ask";
         
         const string conversationsFiles = "conversations-files";

@@ -7,8 +7,6 @@ import './chat-selection.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-console.log(API_BASE_URL);
-
 const ChatSelectionPage = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);

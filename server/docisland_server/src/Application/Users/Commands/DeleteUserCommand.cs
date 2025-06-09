@@ -31,13 +31,13 @@ public class DeleteUserCommandHandler(
             return new UserIdNotFoundException();
         }
 
-        var userToDelete = await userManager.FindByIdAsync(request.UserId.ToString());
+        var userToDelete = await userManager.FindByIdAsync(request.UserId);
         if (userToDelete == null)
         {
             return new UserNotFoundException(request.UserId);
         }
 
-        var sessionUserIsAdmin = (bool)httpContextAccessor.HttpContext?.User.IsInRole("Admin");
+        var sessionUserIsAdmin = httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
         var targetUserIsAdmin = await userManager.IsInRoleAsync(userToDelete, "Admin");
 
         // A normal user can only delete their own account

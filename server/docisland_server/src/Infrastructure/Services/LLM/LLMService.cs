@@ -9,7 +9,7 @@ namespace Infrastructure.Services.LLM;
 
 public class LlmService(HttpClient httpClient, IFileStorageService fileStorageService, IConfiguration configuration) : ILlmService
 {
-    private readonly string _llmEndpoint = configuration["LLMSettings:ServerUrl"];
+    private readonly string _llmEndpoint = configuration["LLMSettings:ServerUrl"] ?? string.Empty;
 
     public async Task<string> AskQuestionAsync(Guid fileId, string question, CancellationToken cancellationToken)
     {
@@ -19,12 +19,12 @@ public class LlmService(HttpClient httpClient, IFileStorageService fileStorageSe
         
         const string conversationsFiles = "conversations-files";
 
-        string? context = null;
+        string? context;
         try
         {
             context = await fileStorageService.GetFileContentAsync(conversationsFiles, fileId, cancellationToken);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             context = string.Empty;
         }

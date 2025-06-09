@@ -24,7 +24,7 @@ public class DocxFileTextExtractor : IFileTextExtractor
 
         using var wordDocument = WordprocessingDocument.Open(memoryStream, false);
         var text = new StringBuilder();
-        foreach (var paragraph in wordDocument.MainDocumentPart.Document.Body.Descendants<Paragraph>())
+        foreach (var paragraph in wordDocument.MainDocumentPart!.Document.Body!.Descendants<Paragraph>())
         {
             text.AppendLine(paragraph.InnerText);
         }

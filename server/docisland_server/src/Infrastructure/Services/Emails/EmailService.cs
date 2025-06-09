@@ -8,12 +8,12 @@ namespace Infrastructure.Services.Emails;
 
 public class EmailService(IConfiguration configuration) : IEmailService
 {
-    private readonly string _smtpHost = configuration["EmailSettings:SmtpHost"];
-    private readonly int _smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"]);
-    private readonly string _smtpUser = configuration["EmailSettings:SenderEmail"];
-    private readonly string _smtpPassword = configuration["EmailSettings:SenderPassword"];
-    private readonly string _fromEmail = configuration["EmailSettings:SenderEmail"];
-    private readonly string _senderName = configuration["EmailSettings:SenderName"];
+    private readonly string _smtpHost = configuration["EmailSettings:SmtpHost"] ?? string.Empty;
+    private readonly int _smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"] ?? "0");
+    private readonly string _smtpUser = configuration["EmailSettings:SenderEmail"] ?? string.Empty;
+    private readonly string _smtpPassword = configuration["EmailSettings:SenderPassword"] ?? string.Empty;
+    private readonly string _fromEmail = configuration["EmailSettings:SenderEmail"] ?? string.Empty;
+    private readonly string _senderName = configuration["EmailSettings:SenderName"] ?? string.Empty;
 
     public async Task SendEmail(string to, string subject, string body, bool isHtml = true)
     {

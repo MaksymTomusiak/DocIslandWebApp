@@ -101,7 +101,7 @@ const Header = () => {
         ) : (
             <div className="login_button" onClick={handleAuthClick}>
                 <div>Login</div>
-                <img src="/header/arrowRightWhite.svg" alt="Arrow" />
+                <img src="/header/arrowRight.svg" alt="Arrow" />
             </div>
         );
     };

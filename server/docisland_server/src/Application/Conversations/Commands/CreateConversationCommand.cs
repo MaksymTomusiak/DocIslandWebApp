@@ -24,8 +24,7 @@ public class CreateConversationCommandHandler(
     IConversationRepository conversationRepository,
     IFileRepository fileRepository,
     UserManager<User> userManager,
-    IFileStorageService fileStorageService,
-    ILlmService llmService) : IRequestHandler<CreateConversationCommand, Either<ConversationException, Conversation>>
+    IFileStorageService fileStorageService) : IRequestHandler<CreateConversationCommand, Either<ConversationException, Conversation>>
 {
     public async Task<Either<ConversationException, Conversation>> Handle(CreateConversationCommand request, CancellationToken cancellationToken)
     {

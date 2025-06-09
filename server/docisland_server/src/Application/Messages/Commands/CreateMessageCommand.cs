@@ -56,9 +56,9 @@ public class CreateMessageCommandHandler(
                     
                     return await CreateMessage(response, conversationId, cancellationToken, isResponse: true);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    var errorMessage = "The AI service is currently unavailable. Please try again later.";
+                    const string errorMessage = "The AI service is currently unavailable. Please try again later.";
                     return await CreateMessage(errorMessage, conversationId, cancellationToken, isResponse: true);
                 }
             },

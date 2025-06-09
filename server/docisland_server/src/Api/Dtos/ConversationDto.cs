@@ -11,7 +11,7 @@ public record ConversationDto(
     public static ConversationDto FromDomainModel(Conversation conversation) => new (
         conversation.Id.Value,
         conversation.UserId,
-        conversation.File.OriginalFileName,
+        conversation.File!.OriginalFileName,
         conversation.CreatedAt);
 }
 

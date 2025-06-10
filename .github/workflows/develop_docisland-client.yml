@@ -1,0 +1,91 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Deploy DocIsland Frontend App to Azure Web App
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: 'docisland-client' # Your Frontend App Service name
+  REACT_ROOT_DIR: 'client' # Path to your React project within the repository
+  # REMOVED: BACKEND_WEBAPP_NAME as we will use the secret directly
+
+jobs:
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install React dependencies
+        working-directory: ${{ env.REACT_ROOT_DIR }}
+        run: npm install
+
+      - name: Create .env.production file for Vite
+        working-directory: ${{ env.REACT_ROOT_DIR }}
+        run: |
+          echo "DEBUG: Creating .env.production file for Vite build..."
+          echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > .env.production
+          # --- UPDATED LINE ---
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env.production
+          # --- END UPDATED LINE ---
+          echo "VITE_CLERK_JWT_TEMPLATE=${{ secrets.VITE_CLERK_JWT_TEMPLATE }}" >> .env.production
+          
+          echo "DEBUGGING: Contents of .env.production (secrets will be masked as ***):"
+          cat .env.production
+
+      - name: Build React app
+        working-directory: ${{ env.REACT_ROOT_DIR }}
+        run: |
+          echo "--- Environment variables in 'Build React app' step before npm build (for verification) ---"
+          echo "NODE_ENV: ${NODE_ENV}"
+          echo "VITE_CLERK_PUBLISHABLE_KEY (from workflow env block): ${VITE_CLERK_PUBLISHABLE_KEY}"
+          # --- UPDATED ECHO LINE (Optional: for clarity in logs) ---
+          echo "VITE_API_BASE_URL (from workflow secrets): ${{ secrets.VITE_API_BASE_URL }}"
+          # --- END UPDATED ECHO LINE ---
+          echo "VITE_CLERK_JWT_TEMPLATE (from workflow env block): ${VITE_CLERK_JWT_TEMPLATE}"
+          echo "-----------------------------------------------------------------------------------"
+          
+          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) BEFORE build:"
+          ls -la .
+
+          export NODE_ENV=production
+          npm run build
+          
+          echo "DEBUGGING: Listing contents of current working directory (${{ env.REACT_ROOT_DIR }}) AFTER build:"
+          ls -la .
+
+          echo "DEBUGGING: Contents of the client/dist folder after build (confirming existence):"
+          ls -la ./dist/
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_24CEEBC3D2D04B22AE2A1743F3C4C8EF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_612737B8D2F247328F4DBC7E968FDABE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_21F92C688E0E41DB98A69F8C8ADD4ACA }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'Production'
+          package: ${{ env.REACT_ROOT_DIR }}/dist

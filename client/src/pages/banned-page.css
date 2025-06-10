@@ -1,0 +1,54 @@
+.banned-page {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7f7f8;
+    padding: 20px;
+}
+
+.banned-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.banned-content h1 {
+    color: #dc3545;
+    font-family: 'secondary-medium';
+    font-size: 28px;
+    margin-bottom: 24px;
+}
+
+.banned-content p {
+    color: #666;
+    font-family: 'secondary-regular';
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.banned-content p:last-of-type {
+    margin-bottom: 32px;
+}
+
+.sign-out-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'secondary-medium';
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sign-out-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}

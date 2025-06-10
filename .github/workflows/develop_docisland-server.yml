@@ -1,0 +1,67 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Deploy DocIsland Backend API to Azure Web App
+
+on:
+  # Trigger on pushes to the 'develop' branch
+  push:
+    branches:
+      - develop
+  # Allows you to manually trigger the workflow from the GitHub Actions tab
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: 'docisland-server' # <--- CONFIRMED: Your Backend App Service name
+  DOTNET_ROOT_DIR: 'server/docisland_server' # Path to your .NET project within the repository
+  OUTPUT_DIR: 'publish_api_output' # Directory where the published API artifacts will be stored
+
+jobs:
+  build-and-deploy-backend:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner for your build
+    environment:
+      name: 'Production' # Link to your production environment in GitHub (optional but good practice)
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} # Provides a direct link to the deployed app
+
+    permissions:
+      contents: read # Required for actions/checkout to read your repository code
+      id-token: write # Required for secure Azure login using OpenID Connect
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4 # Get your repository code
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # <--- IMPORTANT: Ensure this matches your .NET version (e.g., '8.0.x')
+
+      - name: Restore .NET dependencies
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
+        run: dotnet restore
+
+      - name: Build .NET app
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
+        run: dotnet build --configuration Release --no-restore # --no-restore to avoid re-restoring
+
+      - name: Publish .NET app
+        working-directory: ${{ env.DOTNET_ROOT_DIR }} # Run in your .NET project directory
+        # Publish the release build directly to the specified OUTPUT_DIR in the GitHub Actions workspace
+        run: dotnet publish -c Release -o ${{ github.workspace }}/${{ env.OUTPUT_DIR }}
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          # --- CONFIRMED: These are the specific secret names from your auto-generated YML ---
+          # Make sure these secrets exist in your GitHub repository's settings (Settings -> Secrets and variables -> Actions)
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_43595381280E4086B636CED947A18366 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_22DEC5A8CBFF47C29595F6CF853A8F5C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DABD555D6A3F445796345ED58BF0D223 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp # ID for referencing outputs (like the URL)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Your backend App Service name ('docisland-server')
+          slot-name: 'Production' # Deploy to the Production slot
+          package: ${{ github.workspace }}/${{ env.OUTPUT_DIR }} # Deploy the published API artifacts

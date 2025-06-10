@@ -1,13 +1,10 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Text;
 using Api.Dtos;
 using Domain.Conversations;
-using Domain.Messages;
 using Domain.Roles;
 using Domain.Users;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Tests.Common;
 using Tests.Data;
@@ -95,13 +92,13 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
     }
     
     [Fact]
-    public async Task ShouldNotDeleteMessageBecauseNotFound()
+    public async Task ShouldNotDeleteConversationBecauseNotFound()
     {
         // Arrange
         var conversationId = Guid.NewGuid();
 
         // Act
-        var response = await Client.DeleteAsync($"conversation/delete/{conversationId}");
+        var response = await Client.DeleteAsync($"conversations/delete/{conversationId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

@@ -24,7 +24,8 @@ public class CreateConversationCommandHandler(
     IConversationRepository conversationRepository,
     IFileRepository fileRepository,
     UserManager<User> userManager,
-    IFileStorageService fileStorageService) : IRequestHandler<CreateConversationCommand, Either<ConversationException, Conversation>>
+    IFileStorageService fileStorageService,
+    IEnumerable<IFileTextExtractor> extractors) : IRequestHandler<CreateConversationCommand, Either<ConversationException, Conversation>>
 {
     public async Task<Either<ConversationException, Conversation>> Handle(CreateConversationCommand request, CancellationToken cancellationToken)
     {
@@ -38,6 +39,15 @@ public class CreateConversationCommandHandler(
         if (sessionUser == null)
         {
             return new ConversationUserNotFoundException();
+        }
+        
+        var extractor = request.File.ContentType != null
+            ? extractors.FirstOrDefault(e => e.CanHandle(request.File.ContentType))
+            : null;
+
+        if (extractor == null)
+        {
+            return new ConversationUnsupportedFileTypeException(request.File.ContentType ?? string.Empty);
         }
 
         return await CreateConversation(request.File, sessionUser.Id, cancellationToken);

@@ -31,6 +31,9 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
+    
+    public Mock<ILlmService> LlmServiceMock { get; private set; }
+    public Mock<IFileStorageService> FileStorageServiceMock { get; private set; }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -70,22 +73,22 @@ public class IntegrationTestWebFactory : WebApplicationFactory<Program>, IAsyncL
 
             // Remove and mock IFileStorageService
             services.RemoveServiceByType(typeof(IFileStorageService));
-            var fileStorageMock = new Mock<IFileStorageService>();
-            fileStorageMock
+            FileStorageServiceMock = new Mock<IFileStorageService>();
+            FileStorageServiceMock
                 .Setup(x => x.SaveFileAsync(It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("https://mocked-storage-uri.com/file.jpg");
-            fileStorageMock
+            FileStorageServiceMock
                 .Setup(x => x.DeleteFileAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("https://mocked-storage-uri.com/file.jpg");
-            services.AddScoped(_ => fileStorageMock.Object);
+            services.AddScoped(_ => FileStorageServiceMock.Object);
 
             // Remove and mock ILlmService
             services.RemoveServiceByType(typeof(ILlmService));
-            var llmServiceMock = new Mock<ILlmService>();
-            llmServiceMock
+            LlmServiceMock = new Mock<ILlmService>(); // Initialize the exposed mock
+            LlmServiceMock
                 .Setup(x => x.AskQuestionAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("Mocked LLM response");
-            services.AddScoped(_ => llmServiceMock.Object);
+            services.AddScoped(_ => LlmServiceMock.Object);
         });
 
     }

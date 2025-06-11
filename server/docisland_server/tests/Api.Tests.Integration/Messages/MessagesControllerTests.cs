@@ -1,12 +1,15 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Dtos;
+using Application.Common.Interfaces.Services.LLM;
 using Domain.Conversations;
 using Domain.Messages;
 using Domain.Roles;
 using Domain.Users;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Tests.Common;
 using Tests.Data;
 using File = Domain.Files.File;
@@ -21,6 +24,7 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
     private readonly User _mainUser;
     private readonly Role _userRole = RolesData.UserRole;
     private const string TestPassword = "TestPass123!";
+    private readonly Mock<ILlmService> _llmServiceMock;
     
     public MessagesControllerTests(IntegrationTestWebFactory factory) : base(factory)
     {
@@ -30,6 +34,7 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
         _newMessage = MessagesData.NewMessage(_newConversation.Id);
         var token = TestsExtensions.GenerateMockJwt(_mainUser.Id);
         SetCustomAuthorizationHeader(token);
+        _llmServiceMock = factory.LlmServiceMock;
     }
 
     [Fact]
@@ -50,8 +55,14 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
         var dbMessage = await Context.Messages.FirstOrDefaultAsync(x => x.Id == createdMessageId);
 
         dbMessage.Should().NotBeNull();
-        dbMessage!.Content.Should().NotBeNull();
-        dbMessage.ConversationId.Value.Should().Be(request.ConversationId);
+        dbMessage?.Content.Should().NotBeNull();
+        dbMessage?.ConversationId.Value.Should().Be(request.ConversationId);
+        _llmServiceMock.Verify(
+            x => x.AskQuestionAsync(
+                It.Is<Guid>(id => id == _newFile.Id.Value),
+                It.Is<string>(content => content == _newMessage.Content),
+                It.IsAny<CancellationToken>()),
+            Times.Once());
     }
     
     [Fact]
@@ -65,6 +76,12 @@ public class MessagesControllerTests: BaseIntegrationTest, IAsyncLifetime
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        _llmServiceMock.Verify(
+            x => x.AskQuestionAsync(
+                It.Is<Guid>(id => id == _newFile.Id.Value),
+                It.Is<string>(content => content == _newMessage.Content),
+                It.IsAny<CancellationToken>()),
+            Times.Never());
     }
     
     [Fact]

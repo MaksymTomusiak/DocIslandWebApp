@@ -1,11 +1,14 @@
 using System.Net;
 using System.Text;
 using Api.Dtos;
+using Application.Common.Interfaces.Services.Files;
 using Domain.Conversations;
 using Domain.Roles;
 using Domain.Users;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Tests.Common;
 using Tests.Data;
 
@@ -19,12 +22,14 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
     private readonly User _mainUser;
     private readonly Role _userRole = RolesData.UserRole;
     private const string TestPassword = "TestPass123!";
+    private Mock<IFileStorageService> _fileStorageServiceMock;
     
     public ConversationsControllerTests(IntegrationTestWebFactory factory) : base(factory)
     {
         _mainUser = UsersData.MainUser();
         _newFile = FilesData.NewFile(_mainUser.Id);
         _newConversation = ConversationsData.NewConversation(_mainUser.Id, _newFile.Id);
+        _fileStorageServiceMock = factory.FileStorageServiceMock;
     }
 
     [Fact]
@@ -51,6 +56,14 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
 
         var dbConversation = await Context.Conversations.FirstOrDefaultAsync(x => x.Id == createdConversationId);
         dbConversation.Should().NotBeNull();
+        
+        _fileStorageServiceMock.Verify(
+            x => x.SaveFileAsync(
+                It.IsAny<IFormFile>(), 
+                It.IsAny<string>(), 
+                It.IsAny<Guid>(), 
+                It.IsAny<CancellationToken>())
+            , Times.Once());
     }
 
     
@@ -73,6 +86,14 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.UnsupportedMediaType);
+        
+        _fileStorageServiceMock.Verify(
+            x => x.SaveFileAsync(
+                It.IsAny<IFormFile>(), 
+                It.IsAny<string>(), 
+                It.IsAny<Guid>(), 
+                It.IsAny<CancellationToken>())
+            , Times.Never());
     }
 
     
@@ -89,6 +110,13 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
         response.IsSuccessStatusCode.Should().BeTrue();
         var dbConversation = await Context.Conversations.FirstOrDefaultAsync(x => x.Id == conversationId);
         dbConversation.Should().BeNull();
+        
+        _fileStorageServiceMock.Verify(
+            x => x.DeleteFileAsync(
+                It.IsAny<string>(), 
+                _newFile.Id.Value, 
+                It.IsAny<CancellationToken>())
+            , Times.Once());
     }
     
     [Fact]
@@ -102,6 +130,13 @@ public class ConversationsControllerTests: BaseIntegrationTest, IAsyncLifetime
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        _fileStorageServiceMock.Verify(
+            x => x.DeleteFileAsync(
+                It.IsAny<string>(), 
+                _newFile.Id.Value, 
+                It.IsAny<CancellationToken>())
+            , Times.Never());
     }
     
     

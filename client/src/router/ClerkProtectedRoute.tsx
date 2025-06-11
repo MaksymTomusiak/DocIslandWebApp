@@ -5,7 +5,6 @@ import {
     useUser,
 } from '@clerk/clerk-react';
 import { ReactNode } from 'react';
-import Spinner from '../components/common/spinner/Spinner';
 
 interface ClerkProtectedRouteProps {
     children: ReactNode;
@@ -18,7 +17,7 @@ const ClerkProtectedRoute = ({
 }: ClerkProtectedRouteProps) => {
     const { user, isLoaded } = useUser();
 
-    if (!isLoaded) return <Spinner />;
+    if (!isLoaded) return;
 
     if (!user)
         return (

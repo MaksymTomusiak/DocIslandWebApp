@@ -1,7 +1,6 @@
 import { useUser } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
 import { useBan } from '../../contexts/BanContext';
-import Spinner from '../common/spinner/Spinner';
 import BannedPage from '../../pages/BannedPage';
 
 interface BanProtectedRouteProps {
@@ -14,7 +13,7 @@ const BanProtectedRoute = ({ children }: BanProtectedRouteProps) => {
     const isBannedRoute = window.location.pathname === '/banned';
 
     if (!isLoaded) {
-        return <Spinner />;
+        return;
     }
 
     if (!user) {

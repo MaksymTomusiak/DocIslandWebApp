@@ -3,10 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px 60px;
-    min-height: 400px;
-    max-height: 400px;
-    gap: 40px;
+    padding: 40px 20px;
+    min-height: 300px;
     background-color: #006d77;
 }
 
@@ -16,6 +14,8 @@
     align-items: flex-start;
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
 }
 
 .text-group {
@@ -23,12 +23,14 @@
     flex-direction: column;
     gap: 10px;
     max-width: 300px;
-    padding: 0px 10px;
+    min-width: 250px;
+    flex: 1;
+    padding: 0 10px;
     color: #fdfbec;
 }
 
 .text-group-title {
-    font-size: 24px;
+    font-size: clamp(20px, 2.5vw, 24px);
     font-family: 'main-regular';
     justify-content: center;
     align-items: center;
@@ -38,22 +40,24 @@
 }
 
 .copyright {
-    color: #fff;
-    font-family: 'secondary-light';
     color: #fdfbec;
+    font-family: 'secondary-light';
+    text-align: center;
+    padding: 20px 0;
+    font-size: clamp(12px, 1.5vw, 14px);
 }
 
 .text-group-content {
     font-family: 'secondary-light';
-    font-size: 14px;
-    line-height: 30px;
+    font-size: clamp(13px, 1.5vw, 14px);
+    line-height: 1.6;
 }
 
 .text-group-link,
 .text-group-link a {
     font-family: 'secondary-bold';
-    font-size: 14px;
-    line-height: 30px;
+    font-size: clamp(13px, 1.5vw, 14px);
+    line-height: 1.6;
     color: #fdfbec;
     text-decoration: underline;
     transition: color 0.3s ease-in-out;
@@ -72,11 +76,44 @@
     flex-direction: row;
     justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .social-media-icon {
-    width: 24px;
-    height: 24px;
+    width: clamp(20px, 2.5vw, 24px);
+    height: clamp(20px, 2.5vw, 24px);
     color: #fdfbec;
     transition: color 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .text-group {
+        align-items: center;
+        padding: 0;
+    }
+
+    .text-group-title {
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .footer {
+        padding: 30px 10px;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .text-group {
+        min-width: 200px;
+    }
 }

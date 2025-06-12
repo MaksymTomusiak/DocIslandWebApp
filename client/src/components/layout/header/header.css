@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 20px;
+    padding: 20px;
     background-color: #f9fafb;
     font-family: secondary-regular;
     position: fixed;
@@ -18,10 +18,26 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+.logo_container,
+.user_container {
+    width: 120px; /* Fixed width containers */
+    display: flex;
+    align-items: center;
+}
+
+.logo_container {
+    justify-content: flex-start;
+}
+
+.user_container {
+    justify-content: flex-end;
+}
+
 .logo {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    z-index: 1001;
 }
 
 .logo:hover {
@@ -39,6 +55,45 @@
     gap: 2rem;
     opacity: 0;
     animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.mobile_menu_button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+}
+
+.mobile_menu_icon {
+    width: 24px;
+    height: 24px;
+    color: #333;
+    transition: all 0.3s ease-in-out;
+}
+
+.mobile_menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f9fafb;
+    padding: 100px 20px 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.mobile_menu.open {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 @keyframes fadeIn {
@@ -93,6 +148,7 @@
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     border: 1px solid transparent;
+    z-index: 1001;
 }
 
 .login_button:hover {
@@ -106,7 +162,7 @@
 }
 
 .login_button div {
-    font-size: 16px;
+    font-size: clamp(14px, 1.5vw, 16px);
     font-weight: 500;
 }
 
@@ -117,6 +173,7 @@
     opacity: 0;
     animation: fadeIn 0.5s ease-in-out forwards;
     animation-delay: 0.2s;
+    z-index: 1001;
 }
 
 /* Skeleton loading styles */
@@ -132,17 +189,6 @@
 .auth-section-skeleton {
     border-radius: 6px;
     overflow: hidden;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* Clerk UserButton customization */
@@ -234,4 +280,72 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
+}
+
+/* Media Queries */
+@media screen and (max-width: 1024px) {
+    .header_menu {
+        gap: 1.5rem;
+    }
+
+    .login_button {
+        padding: 12px 24px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header_menu {
+        display: none;
+    }
+
+    .mobile_menu_button {
+        display: block;
+    }
+
+    .mobile_menu {
+        display: flex;
+    }
+
+    .mobile_menu p {
+        font-size: 18px;
+        padding: 12px 0;
+        font-weight: 500;
+        color: #333;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .mobile_menu p:hover {
+        color: #59abb2;
+    }
+
+    .login_button {
+        padding: 12px 20px;
+    }
+
+    .login_button div {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 15px;
+    }
+
+    .logo_container,
+    .user_container {
+        width: 100px; /* Slightly smaller on mobile */
+    }
+
+    .logo img {
+        height: 32px;
+    }
+
+    .login_button {
+        padding: 10px 16px;
+    }
+
+    .login_button div {
+        font-size: 14px;
+    }
 }

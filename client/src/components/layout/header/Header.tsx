@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { CustomUserButton } from '../../auth/clerk/CustomClerkComponents';
 import { useAdmin } from '../../../contexts/AdminContext';
+import { Icon } from '@iconify/react';
 import './header.css';
 
 const Header = () => {
@@ -10,6 +11,7 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [showShadow, setShowShadow] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isAdmin, isLoading: isAdminLoading } = useAdmin();
 
     useEffect(() => {
@@ -47,6 +49,11 @@ const Header = () => {
         }
     }, [isClerkLoaded]);
 
+    // Close mobile menu when route changes
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location.pathname]);
+
     const handleAuthClick = () => {
         if (!isSignedIn) {
             navigate('/login');
@@ -77,44 +84,75 @@ const Header = () => {
             return <div className="header_menu" />;
         }
 
-        return (
-            <div className="header_menu">
+        const menuItems = (
+            <>
                 <p onClick={() => handleNavigation('#hero')}>Home</p>
                 <p onClick={() => handleNavigation('#about')}>About</p>
                 <p onClick={() => handleNavigation('#resources')}>Resources</p>
                 {isSignedIn && isAdmin && (
                     <p onClick={() => navigate('/admin/users')}>Users</p>
                 )}
-            </div>
+            </>
+        );
+
+        return (
+            <>
+                <div className="header_menu">{menuItems}</div>
+                <div
+                    className={`mobile_menu ${isMobileMenuOpen ? 'open' : ''}`}
+                >
+                    {menuItems}
+                </div>
+            </>
         );
     };
 
     const renderAuthSection = () => {
         if (!isClerkLoaded) {
-            return <div className="user_menu" />;
+            return (
+                <div className="user_container">
+                    <div className="user_menu" />
+                </div>
+            );
         }
 
-        return isSignedIn ? (
-            <div className="user_menu">
-                <CustomUserButton />
-            </div>
-        ) : (
-            <div className="login_button" onClick={handleAuthClick}>
-                <div>Login</div>
-                <img src="/header/arrowRight.svg" alt="Arrow" />
+        return (
+            <div className="user_container">
+                {isSignedIn ? (
+                    <div className="user_menu">
+                        <CustomUserButton />
+                    </div>
+                ) : (
+                    <div className="login_button" onClick={handleAuthClick}>
+                        <div>Login</div>
+                        <img src="/header/arrowRight.svg" alt="Arrow" />
+                    </div>
+                )}
             </div>
         );
     };
 
     return (
         <header className={`header ${showShadow ? 'shadow' : ''}`}>
-            <div className="logo" onClick={() => handleNavigation('#hero')}>
-                {!isClerkLoaded ? (
-                    <div style={{ width: 120, height: 40 }} />
-                ) : (
-                    <img src="/header/logo.svg" alt="Logo" />
-                )}
+            <div className="logo_container">
+                <div className="logo" onClick={() => handleNavigation('#hero')}>
+                    {!isClerkLoaded ? (
+                        <div style={{ width: 120, height: 40 }} />
+                    ) : (
+                        <img src="/header/logo.svg" alt="Logo" />
+                    )}
+                </div>
             </div>
+            <button
+                className="mobile_menu_button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle mobile menu"
+            >
+                <Icon
+                    icon={isMobileMenuOpen ? 'mdi:close' : 'mdi:menu'}
+                    className="mobile_menu_icon"
+                />
+            </button>
             {renderMenuLinks()}
             {renderAuthSection()}
         </header>

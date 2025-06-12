@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider, SignedOut } from '@clerk/clerk-react';
 import Layout from '../components/layout/Layout';
-import HomePage from '../features/homePage/HomePage';
+import HomePage from '../features/landing/home-page/HomePage';
 import AiChatPage from '../features/ai-chat/AiChatPage';
 import ChatSelectionPage from '../features/chat-selection/ChatSelectionPage';
 import NotFoundPage from '../components/common/not-found/NotFoundPage';
@@ -9,10 +9,12 @@ import AdminUsersPage from '../features/admin/AdminUsersPage';
 import ClerkProtectedRoute from './ClerkProtectedRoute';
 import AdminProtectedRoute from '../components/auth/AdminProtectedRoute';
 import BanProtectedRoute from '../components/auth/BanProtectedRoute';
-import AdminStatusChecker from '../components/auth/AdminStatusChecker';
-import BanStatusChecker from '../components/auth/BanStatusChecker';
-import SignInPage from '../features/auth/SignInPage';
-import SignUpPage from '../features/auth/SignUpPage';
+import AdminStatusChecker from '../components/auth/status-checkers/AdminStatusChecker';
+import BanStatusChecker from '../components/auth/status-checkers/BanStatusChecker';
+import {
+    CustomSignIn,
+    CustomSignUp,
+} from '../components/auth/clerk/CustomClerkComponents';
 
 const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!clerkKey) {
@@ -30,7 +32,7 @@ const Router = () => {
                         path="/login/*"
                         element={
                             <SignedOut>
-                                <SignInPage />
+                                <CustomSignIn />
                             </SignedOut>
                         }
                     />
@@ -38,7 +40,7 @@ const Router = () => {
                         path="/sign-up"
                         element={
                             <SignedOut>
-                                <SignUpPage />
+                                <CustomSignUp />
                             </SignedOut>
                         }
                     />

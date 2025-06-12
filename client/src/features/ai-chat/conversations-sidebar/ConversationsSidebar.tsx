@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from 'react';
 import { Icon } from '@iconify/react';
-import { ConversationDto } from '../../../types/api';
+import { ConversationDto } from '../../../types/types';
 import ConversationsSkeleton from './ConversationsSkeleton';
 import './conversations-sidebar.css';
 

@@ -1,7 +1,7 @@
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { CustomUserButton } from '../../auth/CustomClerkComponents';
+import { CustomUserButton } from '../../auth/clerk/CustomClerkComponents';
 import { useAdmin } from '../../../contexts/AdminContext';
 import './header.css';
 

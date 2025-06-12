@@ -1,5 +1,5 @@
-import { HttpClient } from '../utils/http/HttpClient';
-import { ConversationDto, ConversationCreateDto } from '../types/api';
+import { HttpClient } from '../../utils/http/HttpClient';
+import { ConversationDto, ConversationCreateDto } from '../../types/types';
 
 export class ConversationApi {
     private client: HttpClient;

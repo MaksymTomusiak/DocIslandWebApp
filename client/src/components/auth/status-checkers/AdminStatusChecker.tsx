@@ -1,7 +1,7 @@
 import { useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
-import { useAdmin } from '../../contexts/AdminContext';
-import { useAuthToken } from '../../hooks/useAuthToken';
+import { useAdmin } from '../../../contexts/AdminContext';
+import { useAuthToken } from '../../../hooks/useAuthToken';
 
 const AdminStatusChecker = () => {
     const { user, isLoaded } = useUser();

@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import { useMessages } from '../../hooks/useMessages';
 import Spinner from '../../components/common/spinner/Spinner';
 import ConversationsSidebar from './conversations-sidebar/ConversationsSidebar';
-import ChatMessagesSkeleton from './ChatMessagesSkeleton';
+import ChatMessagesSkeleton from './skeletons/ChatMessagesSkeleton';
 import { useConversation } from '../../hooks/useConversation';
 import { useAuthToken } from '../../hooks/useAuthToken';
 import './ai-chat.css';

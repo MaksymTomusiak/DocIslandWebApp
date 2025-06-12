@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import { MessageApi } from '../services/messageApi';
-import { MessageDto, MessageCreateDto } from '../types/api';
+import { MessageApi } from '../services/api/messageApi';
+import { MessageDto, MessageCreateDto } from '../types/types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useAuthToken } from './useAuthToken';

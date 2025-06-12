@@ -1,7 +1,7 @@
 import { useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
-import { useBan } from '../../contexts/BanContext';
-import { useAuthToken } from '../../hooks/useAuthToken';
+import { useBan } from '../../../contexts/BanContext';
+import { useAuthToken } from '../../../hooks/useAuthToken';
 
 const BanStatusChecker = () => {
     const { user, isLoaded } = useUser();

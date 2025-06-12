@@ -1,7 +1,7 @@
 import { useUser } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
 import { useBan } from '../../contexts/BanContext';
-import BannedPage from '../../pages/BannedPage';
+import BannedPage from '../common/banned/BannedPage';
 
 interface BanProtectedRouteProps {
     children: React.ReactNode;

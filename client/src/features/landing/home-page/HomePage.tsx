@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import Hero from './components/Hero';
-import About from './components/About';
-import FAQ from './components/FAQ';
-import Footer from './Footer/Footer';
+import Hero from '../Hero';
+import About from '../About';
+import FAQ from '../FAQ';
+import Footer from '../footer/Footer';
 import './home-page.css';
 
 const HomePage = () => {

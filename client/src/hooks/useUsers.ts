@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import { UserApi } from '../services/userApi';
-import { UserDto, PaginatedResultDto, PaginationParameters } from '../types/api';
+import { UserApi } from '../services/api/userApi';
+import { UserDto, PaginatedResultDto, PaginationParameters } from '../types/types';
 import { useAuthToken } from './useAuthToken';
 
 export const useUsers = (baseURL: string) => {

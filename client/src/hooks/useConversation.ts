@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ConversationApi } from '../services/conversationApi';
-import { ConversationDto } from '../types/api';
+import { ConversationApi } from '../services/api/conversationApi';
+import { ConversationDto } from '../types/types';
 import { useAuthToken } from './useAuthToken';
 
 export const useConversation = (baseURL: string) => {

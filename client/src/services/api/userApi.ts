@@ -1,5 +1,5 @@
-import { HttpClient } from '../utils/http/HttpClient';
-import { UserDto, PaginatedResultDto, PaginationParameters } from '../types/api';
+import { HttpClient } from '../../utils/http/HttpClient';
+import { UserDto, PaginatedResultDto, PaginationParameters } from '../../types/types';
 
 export class UserApi {
     private client: HttpClient;

@@ -3,7 +3,7 @@ import { useUsers } from '../../hooks/useUsers';
 import { useAdmin } from '../../contexts/AdminContext';
 import { useAuthToken } from '../../hooks/useAuthToken';
 import AdminUsersSkeleton from './AdminUsersSkeleton';
-import { PaginationParameters } from '../../types/api';
+import { PaginationParameters } from '../../types/types';
 import './admin-users.css';
 
 const AdminUsersPage = () => {

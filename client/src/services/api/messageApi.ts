@@ -1,5 +1,5 @@
-import { HttpClient } from '../utils/http/HttpClient';
-import { MessageDto, MessageCreateDto } from '../types/api';
+import { HttpClient } from '../../utils/http/HttpClient';
+import { MessageDto, MessageCreateDto } from '../../types/types';
 
 export class MessageApi {
     private client: HttpClient;

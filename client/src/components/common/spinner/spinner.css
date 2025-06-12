@@ -11,19 +11,22 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background: transparent;
 }
 
 .spinner {
     border: 2px solid #e6f4f1;
     border-top: 2px solid #59abb2;
     border-radius: 50%;
+    width: 100%;
+    height: 100%;
     animation: spin 1s linear infinite;
 }
 
 .spinner-small {
     width: 24px;
     height: 24px;
+    background: transparent;
 }
 
 .spinner-small .spinner {
@@ -37,6 +40,7 @@
 .spinner-medium {
     width: 40px;
     height: 40px;
+    background: transparent;
 }
 
 .spinner-medium .spinner {
@@ -48,6 +52,7 @@
 .spinner-large {
     width: 60px;
     height: 60px;
+    background: transparent;
 }
 
 .spinner-large .spinner {

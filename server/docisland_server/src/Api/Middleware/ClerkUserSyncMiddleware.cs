@@ -1,17 +1,18 @@
 using System.Security.Claims;
 using Application.Common.Interfaces.Services.Synchronization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Middleware;
 
 public class ClerkUserSyncMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IUserSyncService _userSyncService;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public ClerkUserSyncMiddleware(RequestDelegate next, IUserSyncService userSyncService)
+    public ClerkUserSyncMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
     {
         _next = next;
-        _userSyncService = userSyncService;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -28,7 +29,9 @@ public class ClerkUserSyncMiddleware
 
             if (!string.IsNullOrEmpty(userId))
             {
-                await _userSyncService.SyncUserAsync(userId, email, username);
+                using var scope = _serviceScopeFactory.CreateScope();
+                var userSyncService = scope.ServiceProvider.GetRequiredService<IUserSyncService>();
+                await userSyncService.SyncUserAsync(userId, email, username);
             }
         }
 

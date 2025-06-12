@@ -61,20 +61,31 @@ const Header = () => {
     };
 
     const handleNavigation = (path: string) => {
+        // Close mobile menu first
+        setIsMobileMenuOpen(false);
+
         if (path === '/') {
             navigate('/');
-        } else {
-            // If we're not on the home page, navigate to home page first
-            if (location.pathname !== '/') {
-                navigate('/');
-            }
-            // Then scroll to the appropriate section
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // If we're not on the home page, navigate to home page first
+        if (location.pathname !== '/') {
+            navigate('/');
+            // Wait for navigation to complete before scrolling
             setTimeout(() => {
                 const section = document.getElementById(path.substring(1));
                 if (section) {
                     section.scrollIntoView({ behavior: 'smooth' });
                 }
             }, 100);
+        } else {
+            // We're already on home page, just scroll
+            const section = document.getElementById(path.substring(1));
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     };
 
@@ -86,9 +97,9 @@ const Header = () => {
 
         const menuItems = (
             <>
-                <p onClick={() => handleNavigation('#hero')}>Home</p>
+                <p onClick={() => handleNavigation('/')}>Home</p>
                 <p onClick={() => handleNavigation('#about')}>About</p>
-                <p onClick={() => handleNavigation('#resources')}>Resources</p>
+                <p onClick={() => handleNavigation('#faq')}>Resources</p>
                 {isSignedIn && isAdmin && (
                     <p onClick={() => navigate('/admin/users')}>Users</p>
                 )}
@@ -100,6 +111,7 @@ const Header = () => {
                 <div className="header_menu">{menuItems}</div>
                 <div
                     className={`mobile_menu ${isMobileMenuOpen ? 'open' : ''}`}
+                    onClick={(e) => e.stopPropagation()}
                 >
                     {menuItems}
                 </div>
@@ -132,10 +144,27 @@ const Header = () => {
         );
     };
 
+    // Close mobile menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (
+                isMobileMenuOpen &&
+                !target.closest('.mobile_menu') &&
+                !target.closest('.mobile_menu_button')
+            ) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [isMobileMenuOpen]);
+
     return (
         <header className={`header ${showShadow ? 'shadow' : ''}`}>
             <div className="logo_container">
-                <div className="logo" onClick={() => handleNavigation('#hero')}>
+                <div className="logo" onClick={() => handleNavigation('/')}>
                     {!isClerkLoaded ? (
                         <div style={{ width: 120, height: 40 }} />
                     ) : (
@@ -145,7 +174,10 @@ const Header = () => {
             </div>
             <button
                 className="mobile_menu_button"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                }}
                 aria-label="Toggle mobile menu"
             >
                 <Icon

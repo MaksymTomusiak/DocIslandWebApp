@@ -4,6 +4,7 @@ import { useAdmin } from '../../contexts/AdminContext';
 import { useAuthToken } from '../../hooks/useAuthToken';
 import AdminUsersSkeleton from './AdminUsersSkeleton';
 import { PaginationParameters } from '../../types/types';
+import { Tooltip } from '@mui/material';
 import './admin-users.css';
 
 const AdminUsersPage = () => {
@@ -22,7 +23,7 @@ const AdminUsersPage = () => {
     const [sortBy, setSortBy] = useState<string>('username');
     const [sortDescending, setSortDescending] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 10;
+    const pageSize = 5;
 
     // Debounce search term
     useEffect(() => {
@@ -94,102 +95,147 @@ const AdminUsersPage = () => {
                         className="search-input"
                     />
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th
-                                onClick={() => {
-                                    setSortBy('username');
-                                    setSortDescending(
-                                        sortBy === 'username'
-                                            ? !sortDescending
-                                            : false
-                                    );
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                Username{' '}
-                                {sortBy === 'username' &&
-                                    (sortDescending ? '↓' : '↑')}
-                            </th>
-                            <th
-                                onClick={() => {
-                                    setSortBy('email');
-                                    setSortDescending(
-                                        sortBy === 'email'
-                                            ? !sortDescending
-                                            : false
-                                    );
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                Email{' '}
-                                {sortBy === 'email' &&
-                                    (sortDescending ? '↓' : '↑')}
-                            </th>
-                            <th>Admin</th>
-                            <th>Banned</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.items.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.userName}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <span
-                                        className={`status ${
-                                            user.isAdmin ? 'active' : 'inactive'
-                                        }`}
-                                    >
-                                        {user.isAdmin ? 'Yes' : 'No'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span
-                                        className={`status ${
-                                            user.isBanned ? 'banned' : 'active'
-                                        }`}
-                                    >
-                                        {user.isBanned ? 'Yes' : 'No'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className="actions">
-                                        <button
-                                            onClick={() => toggleAdmin(user.id)}
-                                            className={`action-button ${
-                                                user.isAdmin
-                                                    ? 'secondary'
-                                                    : 'primary'
-                                            }`}
-                                            disabled={loading}
-                                        >
-                                            {user.isAdmin
-                                                ? 'Remove Admin'
-                                                : 'Make Admin'}
-                                        </button>
-                                        <button
-                                            onClick={() => toggleBan(user.id)}
-                                            className={`action-button ${
-                                                user.isBanned
-                                                    ? 'secondary'
-                                                    : 'primary'
-                                            }`}
-                                            disabled={loading}
-                                        >
-                                            {user.isBanned ? 'Unban' : 'Ban'}
-                                        </button>
-                                    </div>
-                                </td>
+                <div className="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th
+                                    onClick={() => {
+                                        setSortBy('username');
+                                        setSortDescending(
+                                            sortBy === 'username'
+                                                ? !sortDescending
+                                                : false
+                                        );
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    Username{' '}
+                                    {sortBy === 'username' &&
+                                        (sortDescending ? '↓' : '↑')}
+                                </th>
+                                <th
+                                    onClick={() => {
+                                        setSortBy('email');
+                                        setSortDescending(
+                                            sortBy === 'email'
+                                                ? !sortDescending
+                                                : false
+                                        );
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    Email{' '}
+                                    {sortBy === 'email' &&
+                                        (sortDescending ? '↓' : '↑')}
+                                </th>
+                                <th>Admin</th>
+                                <th>Banned</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {users.items.map((user) => (
+                                <tr key={user.id}>
+                                    <td>
+                                        <Tooltip
+                                            title={user.userName}
+                                            placement="top"
+                                        >
+                                            <div className="truncate-cell">
+                                                {user.userName}
+                                            </div>
+                                        </Tooltip>
+                                    </td>
+                                    <td>
+                                        <Tooltip
+                                            title={user.email}
+                                            placement="top"
+                                        >
+                                            <div className="truncate-cell">
+                                                {user.email}
+                                            </div>
+                                        </Tooltip>
+                                    </td>
+                                    <td>
+                                        <span
+                                            className={`status ${
+                                                user.isAdmin
+                                                    ? 'active'
+                                                    : 'inactive'
+                                            }`}
+                                        >
+                                            {user.isAdmin ? 'Yes' : 'No'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            className={`status ${
+                                                user.isBanned
+                                                    ? 'banned'
+                                                    : 'active'
+                                            }`}
+                                        >
+                                            {user.isBanned ? 'Yes' : 'No'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className="actions">
+                                            <button
+                                                onClick={() =>
+                                                    toggleAdmin(user.id)
+                                                }
+                                                className={`action-button ${
+                                                    user.isAdmin
+                                                        ? 'secondary'
+                                                        : 'primary'
+                                                }`}
+                                                disabled={loading}
+                                            >
+                                                <span className="button-text">
+                                                    {user.isAdmin
+                                                        ? 'Remove Admin'
+                                                        : 'Make Admin'}
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    toggleBan(user.id)
+                                                }
+                                                className={`action-button ${
+                                                    user.isBanned
+                                                        ? 'secondary'
+                                                        : 'ban'
+                                                }`}
+                                                disabled={loading}
+                                            >
+                                                <span className="button-text">
+                                                    {user.isBanned
+                                                        ? 'Unban'
+                                                        : 'Ban'}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 <div className="table-footer">
                     <div className="pagination-info">
-                        Showing {users.items.length} of {users.totalCount} users
+                        {users.items.length > 0 ? (
+                            <span>
+                                Showing {(currentPage - 1) * pageSize + 1} -{' '}
+                                {Math.min(
+                                    currentPage * pageSize,
+                                    users.totalCount
+                                )}{' '}
+                                of {users.totalCount} users
+                            </span>
+                        ) : (
+                            'No users found'
+                        )}
                     </div>
                     <div className="pagination-controls">
                         <button

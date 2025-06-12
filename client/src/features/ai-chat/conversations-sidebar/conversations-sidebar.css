@@ -10,7 +10,7 @@
     left: -300px;
     top: 0;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    z-index: 98;
+    z-index: 998;
     box-shadow: none;
 }
 
@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99;
+    z-index: 999;
     transition: all 0.3s ease;
 }
 
@@ -45,6 +45,46 @@
 
 .sidebar-toggle.expanded {
     left: 300px;
+}
+
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        width: 32px;
+        height: 60px;
+        border-radius: 0 12px 12px 0;
+        background: linear-gradient(135deg, #59abb2 0%, #4a8f94 100%);
+        box-shadow: 2px 0 8px rgba(89, 171, 178, 0.2);
+        z-index: 999;
+    }
+
+    .sidebar-toggle.expanded {
+        background: linear-gradient(135deg, #4a8f94 0%, #3b7f84 100%);
+        left: 280px;
+    }
+
+    .conversations-sidebar {
+        width: 280px;
+        left: -280px;
+        height: 100vh;
+        margin-top: 0;
+        z-index: 998;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+    }
+
+    .conversations-sidebar.expanded {
+        transform: translateX(280px);
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-container.with-sidebar {
+        margin-left: 0;
+        filter: brightness(0.95);
+    }
 }
 
 .sidebar-header {

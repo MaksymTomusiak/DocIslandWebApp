@@ -52,7 +52,7 @@ table {
 
 th,
 td {
-    padding: 16px 20px;
+    padding: 8px 20px;
     text-align: left;
     border-bottom: 1px solid #e6f4f1;
 }
@@ -103,9 +103,12 @@ td {
 .actions {
     display: flex;
     gap: 8px;
+    min-width: 240px; /* Fixed width for actions container */
 }
 
 .action-button {
+    flex: 1; /* Make buttons take equal width */
+    min-width: 110px; /* Minimum width for each button */
     padding: 8px 16px;
     border-radius: 8px;
     border: none;
@@ -113,6 +116,14 @@ td {
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-text {
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .action-button.primary {
@@ -121,21 +132,36 @@ td {
 }
 
 .action-button.primary:hover {
-    background-color: #4a8f95;
+    background-color: #4a8f94;
 }
 
 .action-button.secondary {
-    background-color: #f5f5f5;
-    color: #666;
+    background-color: #e6f4f1;
+    color: #59abb2;
+    border: 1px solid #59abb2;
 }
 
 .action-button.secondary:hover {
-    background-color: #e0e0e0;
+    background-color: #d1e9e6;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(89, 171, 178, 0.15);
+}
+
+/* Ban button styles */
+.action-button.ban {
+    background-color: #ffe5e5;
+    color: #dc3545;
+}
+
+.action-button.ban:hover {
+    background-color: #ffd1d1;
 }
 
 .action-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .table-footer {
@@ -192,4 +218,115 @@ td {
     padding: 20px;
     font-family: 'secondary-regular';
     font-size: 16px;
+}
+
+/* Text truncation for username and email cells */
+.truncate-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: default;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 768px) {
+    .truncate-cell {
+        max-width: 150px;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 8px;
+        min-width: 120px;
+    }
+
+    .action-button {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: unset;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .admin-users-container {
+        padding: 12px;
+    }
+
+    .admin-users-container h1 {
+        font-size: 24px;
+        max-width: 100%;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+
+    .users-table {
+        max-width: 100%;
+        border-radius: 12px;
+    }
+
+    /* Make table scrollable horizontally */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -12px;
+        padding: 0 12px;
+    }
+
+    table {
+        min-width: 800px; /* Ensure table doesn't shrink too much */
+    }
+
+    /* Adjust cell padding */
+    th,
+    td {
+        padding: 8px 16px;
+    }
+
+    /* Stack action buttons on mobile */
+    .actions {
+        flex-direction: column;
+        gap: 8px;
+        min-width: 120px;
+    }
+
+    .action-button {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: unset;
+    }
+
+    /* Adjust table controls */
+    .table-controls {
+        padding: 12px;
+    }
+
+    /* Adjust footer layout */
+    .table-footer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+        padding: 12px;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+
+    .pagination-controls {
+        justify-content: center;
+    }
+
+    .pagination-button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .page-info {
+        min-width: 100px;
+        text-align: center;
+    }
 }

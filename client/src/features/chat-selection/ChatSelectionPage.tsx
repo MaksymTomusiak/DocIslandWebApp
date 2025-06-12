@@ -81,6 +81,16 @@ const ChatSelectionPage = () => {
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
+                    onClick={(e) => {
+                        if (!(e.target as HTMLElement).closest('button')) {
+                            const fileInput = document.querySelector(
+                                '.file-input'
+                            ) as HTMLInputElement;
+                            if (fileInput) {
+                                fileInput.click();
+                            }
+                        }
+                    }}
                 >
                     <Icon
                         icon="material-symbols:upload-file"
@@ -88,15 +98,20 @@ const ChatSelectionPage = () => {
                     />
                     <p>Drag and drop your file here</p>
                     <p className="or-text">or</p>
-                    <label className="file-input-label">
-                        Choose File
-                        <input
-                            type="file"
-                            className="file-input"
-                            onChange={handleFileSelect}
-                            accept=".pdf,.doc,.docx,.txt"
-                        />
-                    </label>
+                    <div
+                        className="file-input-wrapper"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <label className="file-input-label">
+                            Choose File
+                            <input
+                                type="file"
+                                className="file-input"
+                                onChange={handleFileSelect}
+                                accept=".pdf,.doc,.docx,.txt"
+                            />
+                        </label>
+                    </div>
                     {selectedFile && (
                         <>
                             <div className="selected-file">
@@ -106,11 +121,16 @@ const ChatSelectionPage = () => {
                             <div className="start-chat-button-container">
                                 <button
                                     className="start-chat-button"
-                                    onClick={handleStartChat}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleStartChat();
+                                    }}
                                     disabled={isCreatingChat}
                                 >
                                     {isCreatingChat ? (
-                                        <Spinner size="small" />
+                                        <div className="spinner-container">
+                                            <Spinner size="small" />
+                                        </div>
                                     ) : (
                                         <>
                                             <span>Start Chat</span>

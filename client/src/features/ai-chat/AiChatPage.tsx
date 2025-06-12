@@ -20,6 +20,7 @@ const AiChatPage = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { token, isLoading: isTokenLoading } = useAuthToken();
     const [retryCount, setRetryCount] = useState(0);
+    const [isNetworkError, setIsNetworkError] = useState(false);
     const MAX_RETRIES = 3;
 
     const {
@@ -95,7 +96,15 @@ const AiChatPage = () => {
     // Handle message loading errors
     useEffect(() => {
         if (messagesError) {
-            if (retryCount < MAX_RETRIES) {
+            // Check if it's a network error
+            const isNetwork =
+                messagesError.includes('Network Error') ||
+                messagesError.includes('Failed to fetch') ||
+                messagesError.includes('Request was cancelled');
+
+            setIsNetworkError(isNetwork);
+
+            if (isNetwork && retryCount < MAX_RETRIES) {
                 // Retry loading messages after a delay
                 const timer = setTimeout(() => {
                     setRetryCount((prev) => prev + 1);
@@ -103,13 +112,14 @@ const AiChatPage = () => {
                 }, 2000); // Wait 2 seconds before retrying
 
                 return () => clearTimeout(timer);
-            } else {
-                // Only redirect after max retries
+            } else if (isNetwork) {
+                // Only redirect after max retries for network errors
                 navigate('/select-chat', { replace: true });
             }
         } else {
-            // Reset retry count when messages load successfully
+            // Reset retry count and network error state when messages load successfully
             setRetryCount(0);
+            setIsNetworkError(false);
         }
     }, [messagesError, navigate, retryCount, loadMessages]);
 
@@ -127,6 +137,7 @@ const AiChatPage = () => {
             await sendMessage(trimmedMessage);
         } catch (err) {
             console.error('Failed to send message:', err);
+            // Don't retry on send message errors - let the user try again manually
         }
     }, [message, conversationId, sendMessage, token]);
 
@@ -188,15 +199,26 @@ const AiChatPage = () => {
         }
 
         if (messagesError) {
-            return (
-                <div className="error">
-                    {retryCount < MAX_RETRIES
-                        ? `Connection issue. Retrying... (${
-                              retryCount + 1
-                          }/${MAX_RETRIES})`
-                        : 'Failed to load messages. Please try again later.'}
-                </div>
-            );
+            if (isNetworkError) {
+                return (
+                    <div className="error">
+                        {retryCount < MAX_RETRIES
+                            ? `Connection issue. Retrying... (${
+                                  retryCount + 1
+                              }/${MAX_RETRIES})`
+                            : 'Failed to load messages. Please try again later.'}
+                    </div>
+                );
+            } else {
+                // For non-network errors (like timeouts), show a different message
+                return (
+                    <div className="error">
+                        {messagesError.includes('timeout')
+                            ? 'Request timed out. Please try again.'
+                            : 'An error occurred. Please try again.'}
+                    </div>
+                );
+            }
         }
 
         if (messages.length === 0) {

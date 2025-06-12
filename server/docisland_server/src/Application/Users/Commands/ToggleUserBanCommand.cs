@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Services.Synchronization;
 using Application.Users.Exceptions;
 using Domain.Users;
 using LanguageExt;
@@ -15,10 +15,12 @@ public record ToggleUserBanCommand : IRequest<Either<UserException, bool>>
 public class ToggleUserBanCommandHandler : IRequestHandler<ToggleUserBanCommand, Either<UserException, bool>>
 {
     private readonly UserManager<User> _userManager;
+    private readonly IUserSyncService _userSyncService;
 
-    public ToggleUserBanCommandHandler(UserManager<User> userManager)
+    public ToggleUserBanCommandHandler(UserManager<User> userManager, IUserSyncService userSyncService)
     {
         _userManager = userManager;
+        _userSyncService = userSyncService;
     }
 
     public async Task<Either<UserException, bool>> Handle(ToggleUserBanCommand request, CancellationToken cancellationToken)
@@ -33,6 +35,9 @@ public class ToggleUserBanCommandHandler : IRequestHandler<ToggleUserBanCommand,
 
             user.IsBanned = !user.IsBanned;
             await _userManager.UpdateAsync(user);
+
+            // Update the cached user's ban status
+            await _userSyncService.SyncUserIsBannedStatusAsync(user.Id, user.IsBanned);
 
             return user.IsBanned;
         }
